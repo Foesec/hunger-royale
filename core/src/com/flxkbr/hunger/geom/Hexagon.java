@@ -79,6 +79,12 @@ public class Hexagon {
 		return new Vector2(x, y);
 	}
 	
+	public static Vector3 offsetToCube(int x, int y) {
+		int z = y - (x + (x&1)) / 2;
+		int yn = -x-z;
+		return new Vector3(x, yn, z);
+	}
+	
 	public void moveAxial(Vector2 delta) {
 		axial.set(delta.x, delta.y);
 		initialize(false);
