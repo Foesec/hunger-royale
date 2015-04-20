@@ -15,6 +15,7 @@ public class Hexagon {
 	private float size;
 	private float height, width;
 	private int offsetX, offsetY;
+	private int terrainType;
 	private Vector2 axial = new Vector2();
 	private Vector3 cube = new Vector3();
 
@@ -22,6 +23,7 @@ public class Hexagon {
 		size = 1;
 		offsetX = offsetY = 0;
 		center = new Vector2(0, 0);
+		terrainType = 0;
 		initialize(true);
 	}
 	
@@ -38,7 +40,13 @@ public class Hexagon {
 		}
 		width = 2 * size;
 		height = HEIGHT_FACTOR * size;
+		terrainType = 0;
 		initialize(offset);
+	}
+	
+	public Hexagon(boolean offset, int x, int y, int size, int terrainType, Vector2 center) {
+		this(offset, x, y, size, center);
+		this.terrainType = terrainType;
 	}
 	
 	private void initialize(boolean offset) {
@@ -124,5 +132,9 @@ public class Hexagon {
 	
 	public float getHeight() {
 		return height;
+	}
+	
+	public int getTerrainType() {
+		return terrainType;
 	}
 }
