@@ -30,7 +30,18 @@ public class LoaderTest implements RoyalTest {
 		else
 			Gdx.app.error(LoaderTest.class.toString(), "Texture could not be loaded!");
 		
-		
+		loaded = loader.loadRawTextFile("test.txt");
+		if (loaded) {
+			Gdx.app.log(LoaderTest.class.toString(), "Textfile Loaded!");
+			try {
+				String str = loader.getRawTextFile("test");
+				if (str != null) {
+					Gdx.app.log(LoaderTest.class.toString(), str);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		
 		return loaded;
 	}
