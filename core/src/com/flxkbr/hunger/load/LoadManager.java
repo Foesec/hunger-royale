@@ -3,21 +3,25 @@ package com.flxkbr.hunger.load;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.flxkbr.hunger.testing.LogHandler;
 
-public class LoadManager {
+public class LoadManager implements Disposable {
 	
 	private static LoadManager manager;
 	
 	private ObjectMap<String, Texture> textures;
-	private ObjectMap<String, Json> jsons;
 	private ObjectMap<String, String> strings;
+	private ObjectMap<String, String> rawtextfiles;
 	
 	private LoadManager() {
-		
+		textures = new ObjectMap<String, Texture>();
+		strings = new ObjectMap<String, String>();
+		rawtextfiles = new ObjectMap<String, String>();
+		DisposeHandler.registerDisposable(this);
 	}
 	
 	public static LoadManager getLoadManager() {
@@ -27,18 +31,45 @@ public class LoadManager {
 		return manager;
 	}
 	
-	public Json getJson(String key) {
-		if (jsons.containsKey(key)) {
-			return jsons.get(key);
+	public static void globalDispose() {
+		if (manager != null) 
+			manager.dispose();
+	}
+	
+	public void dispose() {
+		for (Texture tex : textures.values()) {
+			tex.dispose();
 		}
-		Gdx.app.error(LoadManager.class.toString(), "Specified Json File could not be found!");
-		LogHandler.submitError(LoadManager.class.toString(), "Specified Json File could not be found!");
-		return null;
+	}
+	
+	public boolean loadRawTextFile(String filename) {
+		String fn = filename.endsWith(".txt") ? filename : filename+".txt";
+		FileHandle f = Gdx.files.internal("text/"+fn);
+		if (f.exists()) {
+			String content = f.readString();
+			fn = fn.replaceAll("\\.txt", "");
+			rawtextfiles.put(fn, content);
+			return true;
+		} else {
+			Gdx.app.error(LoadManager.class.toString(), "Specified textfile " + filename + " could not be found");
+			return false;
+		}
+	}
+	
+	public String getRawTextFile(String key) {
+		if (rawtextfiles.containsKey(key)) {
+			return rawtextfiles.get(key);
+		}
+		else if (loadRawTextFile(key)) {
+			return rawtextfiles.get(key);
+		} else {
+			throw new GdxRuntimeException("Raw Textfile "+ key +" could not be loaded");
+		}
 	}
 	
 	public boolean loadTexture(String filename) {
 		String fn = filename.endsWith(".png") ? filename : filename+".png";
-		FileHandle f = Gdx.files.internal("data/textures/"+fn);
+		FileHandle f = Gdx.files.internal("textures/"+fn);
 		if (f.exists()) {
 			Texture tex = new Texture(f);
 			fn = fn.replaceAll("\\.png", "");
@@ -54,9 +85,10 @@ public class LoadManager {
 		if (textures.containsKey(key)) {
 			return textures.get(key);
 		}
-		if (loadTexture(key)) {
+		else if (loadTexture(key)) {
 			return textures.get(key);
+		} else {
+			throw new GdxRuntimeException("Texture "+ key +" could not be loaded");
 		}
-		throw new GdxRuntimeException("Texture "+ key +" could not be loaded");
 	}
 }

@@ -1,7 +1,6 @@
 package com.flxkbr.hunger.testing.tests;
 
 import com.flxkbr.hunger.testing.LogHandler;
-import com.flxkbr.hunger.testing.RoyalTest;
 
 public class LogHandlerTest implements RoyalTest {
 

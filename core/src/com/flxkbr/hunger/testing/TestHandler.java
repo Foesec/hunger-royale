@@ -1,6 +1,7 @@
 package com.flxkbr.hunger.testing;
 
 import com.badlogic.gdx.utils.Array;
+import com.flxkbr.hunger.testing.tests.RoyalTest;
 
 public class TestHandler {
 	

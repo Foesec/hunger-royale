@@ -5,9 +5,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.flxkbr.hunger.load.DisposeHandler;
+import com.flxkbr.hunger.load.LoadManager;
 import com.flxkbr.hunger.testing.TestHandler;
-import com.flxkbr.hunger.testing.tests.LogHandlerTest;
-import com.flxkbr.hunger.testing.tests.MapTesting;
+import com.flxkbr.hunger.testing.tests.LoaderTest;
 
 public class HungerRoyale extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -18,11 +19,12 @@ public class HungerRoyale extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
 		
-//		TestHandler testy = new TestHandler();
-//		
-//		testy.submitTest(new MapTesting());
-//		testy.submitTest(new LogHandlerTest());
-//		testy.run();
+		TestHandler testy = new TestHandler();
+		
+		testy.submitTest(new LoaderTest());
+		testy.run();
+		
+//		Texture tex = new Texture(Gdx.files.internal("/data"))
 	}
 
 	@Override
@@ -32,5 +34,11 @@ public class HungerRoyale extends ApplicationAdapter {
 		batch.begin();
 		batch.draw(img, 0, 0);
 		batch.end();
+	}
+	
+	@Override
+	public void dispose() {
+		LoadManager.globalDispose();
+		DisposeHandler.disposeAll();
 	}
 }

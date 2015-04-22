@@ -1,4 +1,4 @@
-package com.flxkbr.hunger.testing;
+package com.flxkbr.hunger.testing.tests;
 
 public interface RoyalTest {
 	public void init();

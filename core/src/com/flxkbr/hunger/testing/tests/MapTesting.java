@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.flxkbr.hunger.geom.HexMap;
 import com.flxkbr.hunger.geom.Hexagon;
-import com.flxkbr.hunger.testing.RoyalTest;
 
 public class MapTesting implements RoyalTest{
 	
