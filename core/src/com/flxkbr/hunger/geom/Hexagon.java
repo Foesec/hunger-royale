@@ -3,6 +3,7 @@ package com.flxkbr.hunger.geom;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.flxkbr.hunger.GlobalConstants;
 
 public class Hexagon {
 	
@@ -12,7 +13,7 @@ public class Hexagon {
 	
 	// based on even-q implementation --> (1, 0) goes up
 	private Vector2 center;
-	private float size;
+	private float size = GlobalConstants.HEXSIZE;
 	private float height, width;
 	private int offsetX, offsetY;
 	private int terrainType;
@@ -20,22 +21,20 @@ public class Hexagon {
 	private Vector3 cube = new Vector3();
 
 	public Hexagon() {
-		size = 1;
+		//size = 1;
 		offsetX = offsetY = 0;
 		center = new Vector2(0, 0);
 		terrainType = 0;
 		initialize(true);
 	}
 	
-	public Hexagon(boolean offset, int x, int y, int size, Vector2 center) {
+	public Hexagon(boolean offset, int x, int y, Vector2 center) {
 		if (offset) {
 			this.offsetX = x;
 			this.offsetY = y;
-			this.size = size;
 			this.center = center;
 		} else {
 			axial.set(x, y);
-			this.size = size;
 			this.center = center;
 		}
 		width = 2 * size;
@@ -45,7 +44,7 @@ public class Hexagon {
 	}
 	
 	public Hexagon(boolean offset, int x, int y, int size, int terrainType, Vector2 center) {
-		this(offset, x, y, size, center);
+		this(offset, x, y, center);
 		this.terrainType = terrainType;
 	}
 	
@@ -110,12 +109,16 @@ public class Hexagon {
 		initialize(false);
 	}
 	
-	public int getX() {
+	public int getOffsetX() {
 		return offsetX;
 	}
 	
-	public int getY() {
+	public int getOffsetY() {
 		return offsetY;
+	}
+	
+	public Vector2 getOffset() {
+		return new Vector2(offsetX, offsetY);
 	}
 	
 	public Vector2 getAxial() {
@@ -137,4 +140,9 @@ public class Hexagon {
 	public int getTerrainType() {
 		return terrainType;
 	}
+	
+	public Vector2 getCenter() {
+		return center;
+	}
+	
 }

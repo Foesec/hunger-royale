@@ -1,9 +1,10 @@
-package com.flxkbr.hunger.testing;
+package com.flxkbr.hunger.testing.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.flxkbr.hunger.geom.HexMap;
 import com.flxkbr.hunger.geom.Hexagon;
+import com.flxkbr.hunger.testing.RoyalTest;
 
 public class MapTesting implements RoyalTest{
 	
@@ -11,7 +12,7 @@ public class MapTesting implements RoyalTest{
 	private final int SIZE = 5;
 
 	public void init() {
-		map = new HexMap(SIZE);
+		map = new HexMap();
 	}
 	
 	public boolean run() {
@@ -19,14 +20,24 @@ public class MapTesting implements RoyalTest{
 		int count = 0;
 		System.out.print("[");
 		for (Hexagon hex : hm) {
-			if (count == 5) {
+			if (count == 4) {
 				count = 0;
 				System.out.print("\n ");
 			}
 			System.out.print(hex.getTerrainType() + ",");
 			++count;
 		}
-		System.out.print("]");
+		System.out.print("]\n");
+		
+		count = 0;
+		for (Hexagon hex : hm) {
+			if (count == 4) {
+				count = 0;
+				System.out.print("\n");
+			}
+			System.out.print(hex.getCenter() + ",");
+			++count;
+		}
 		return true;
 	}
 	

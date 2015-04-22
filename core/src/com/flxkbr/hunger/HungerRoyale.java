@@ -5,7 +5,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.flxkbr.hunger.testing.MapTesting;
+import com.flxkbr.hunger.testing.TestHandler;
+import com.flxkbr.hunger.testing.tests.LogHandlerTest;
+import com.flxkbr.hunger.testing.tests.MapTesting;
 
 public class HungerRoyale extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -16,10 +18,11 @@ public class HungerRoyale extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
 		
-		MapTesting test = new MapTesting();
-		test.init();
-		test.run();
-		test.cleanup();
+//		TestHandler testy = new TestHandler();
+//		
+//		testy.submitTest(new MapTesting());
+//		testy.submitTest(new LogHandlerTest());
+//		testy.run();
 	}
 
 	@Override

@@ -15,10 +15,10 @@ public class HexMap {
 	public final static String MAPDIR = "maps/";
 	public final static String TAG = "HEXMAP";
 	
-	private final float AXPIXFACTOR;
-	private final int MAGIC_SIZE = 1;
+	private final float HEX_SIZE = GlobalConstants.HEXSIZE;
+	private final float AXPIXFACTOR = GlobalConstants.AXPIXFACTOR;
 	
-	private int WIDTH, HEIGHT, HEX_SIZE;
+	private int WIDTH, HEIGHT;
 	private Array<Hexagon> map;
 	private JsonMap jsonMap;
 	private Json json = new Json();
@@ -27,6 +27,11 @@ public class HexMap {
 															new Vector2(-1, 0), new Vector2(-1, 1), new Vector2(0, 1)};
 	private static final Vector3[] cubeDirections = {	new Vector3(1, -1, 0), new Vector3(1, 0, -1), new Vector3(0, 1, -1),
 															new Vector3(-1, 1, 0), new Vector3(-1, 0, 1), new Vector3(0, -1, 1)};
+	
+	private IntArray dummyMap = new IntArray(new int[] {1,1,1,1,
+														1,0,0,1,
+														1,0,0,1,
+														1,1,1,1});
 	
 	private class JsonMap {
 		private IntArray map;
@@ -92,33 +97,24 @@ public class HexMap {
 		}
 	}
 
-	public HexMap(int width, int height, int hexSize) {
-		WIDTH = width;
-		HEIGHT = height;
-		HEX_SIZE = hexSize;
-		AXPIXFACTOR = (float) (hexSize * GlobalConstants.SQRT3BY2);
-		map = new Array<Hexagon>(width*height);
-	}
-	
 	public HexMap(String filename) {
-		HEX_SIZE = MAGIC_SIZE;
-		AXPIXFACTOR = (float) (HEX_SIZE * GlobalConstants.SQRT3BY2);
 		parseFromJson(filename);
 	}
 	
+	/**
+	 * @deprecated
+	 * only for testing purposes
+	 */
 	@Deprecated
-	// only for testing
-	public HexMap(int size) {
-		WIDTH = HEIGHT = size;
-		HEX_SIZE = 1;
-		AXPIXFACTOR = GlobalConstants.SQRT3BY2;
-		map = new Array<Hexagon>(size * size);
-		for (int x = 0; x < size; ++x) {
-			for (int y = 0; y < size; ++y) {
-				map.add(new Hexagon(true, x, y, 1, MathUtils.random(4), null));
+	public HexMap() {
+		WIDTH = HEIGHT = 4;
+		map = new Array<Hexagon>(WIDTH * HEIGHT);
+		for (int y = 0; y < HEIGHT; ++y) {
+			for (int x = 0; x < WIDTH; ++x) {
+				map.add(new Hexagon(true, x, y, (int)HEX_SIZE, dummyMap.get(x+y*WIDTH), offsetToPixel(x,y)));
 			}
 		}
-		jsonMap = new JsonMap(5);
+		jsonMap = new JsonMap(dummyMap, WIDTH, "negers", new Array<String>(new String[] {"point", "less"}));
 	}
 	
 	public void dispose() {
@@ -152,7 +148,7 @@ public class HexMap {
 			else 
 				map.clear();
 			for (int i = 0; i < jsonMap.getMap().size; ++i) {
-				map.add(new Hexagon(true, i%WIDTH, (int)i/WIDTH, 1, null));
+				map.add(new Hexagon(true, i%WIDTH, (int)i/WIDTH, null));
 			}
 			Gdx.app.debug(HexMap.class.toString(), "JsonMap successfully read into Hexagon Map");
 		} else {
