@@ -5,7 +5,7 @@ import com.flxkbr.hunger.efw.HRComp;
 
 public class Position implements HRComp {
 	
-	public Vector2 pos;
+	public Vector2 pos = new Vector2(0, 0);
 
 	@Override
 	public String getType() {
