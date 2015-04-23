@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Array;
 import com.flxkbr.hunger.geom.HexMap;
 import com.flxkbr.hunger.geom.Hexagon;
 
-public class MapTesting implements RoyalTest{
+public class MapTest implements RoyalTest{
 	
 	private HexMap map;
 	private final int SIZE = 5;
