@@ -10,31 +10,38 @@ public class DisposeHandler {
 		INIT, RUNTIME, EXIT;
 	}
 	
-	private static boolean initialized = false;
 	
-	private static Array<Disposable> disposables;
-	private static Array<DisposeRequestable> requestables;
-	private static Array<Disposable> runtimeDisposables;
-	private static Array<Disposable> afterInitDisposables;
+	private static DisposeHandler disposer;
+	
+	private Array<Disposable> disposables;
+	private Array<DisposeRequestable> requestables;
+	private Array<Disposable> runtimeDisposables;
+	private Array<Disposable> afterInitDisposables;
+	
+	private DisposeHandler() {
+		disposables = new Array<Disposable>();
+		runtimeDisposables = new Array<Disposable>();
+		afterInitDisposables = new Array<Disposable>();
+		requestables = new Array<DisposeRequestable>();
+	}
 	
 	public static void init() {
-		if (!initialized) {
-			disposables = new Array<Disposable>();
-			runtimeDisposables = new Array<Disposable>();
-			afterInitDisposables = new Array<Disposable>();
-			requestables = new Array<DisposeRequestable>();
-		}
-		initialized = true;
+		disposer = new DisposeHandler();
 	}
-
+	
+	public static boolean initFlag() {
+		return (disposer != null);
+	}
+	
 	public static void registerDisposable(Disposable disp) {
-		registerDisposable(disp, DisposeTime.EXIT);
+		disposer.regDisposable(disp, DisposeTime.EXIT);
 	}
 	
 	public static void registerDisposable(Disposable disp, DisposeTime when) {
-		if (!initialized)
-			init();
-		
+		disposer.regDisposable(disp, when);
+	}
+	
+	private void regDisposable(Disposable disp, DisposeTime when) {
 		switch (when) {
 		case EXIT:
 			disposables.add(disp);
@@ -49,25 +56,37 @@ public class DisposeHandler {
 	}
 	
 	public static void registerRequestable(DisposeRequestable disreq) {
-		if (!initialized)
-			init();
+		disposer.regRequestable(disreq);
+	}
+	
+	private void regRequestable(DisposeRequestable disreq) {
 		requestables.add(disreq);
 	}
 	
 	public static void disposeAll() {
-		if (disposables != null){
-			for (Disposable d : disposables) {
-				d.dispose();
-			}
-		}
+		disposer.dispAll();
 		requestDisposeAll();
 	}
 	
+	private void dispAll() {
+		for (Disposable disp : disposables) {
+			disp.dispose();
+		}
+		for (Disposable disp : runtimeDisposables) {
+			disp.dispose();
+		}
+		for (Disposable disp : afterInitDisposables) {
+			disp.dispose();
+		}
+	}
+	
 	public static void requestDisposeAll() {
-		if (requestables != null) {
-			for (DisposeRequestable dr : requestables) {
-				dr.requestDispose();
-			}
+		disposer.reqDisposeAll();
+	}
+	
+	private void reqDisposeAll() {
+		for (DisposeRequestable dr : requestables) {
+			dr.requestDispose();
 		}
 	}
 }
