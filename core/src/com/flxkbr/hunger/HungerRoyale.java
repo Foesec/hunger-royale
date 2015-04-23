@@ -38,6 +38,7 @@ public class HungerRoyale extends ApplicationAdapter {
 	@Override
 	public void dispose() {
 		LoadManager.globalDispose();
-		DisposeHandler.disposeAll();
+		if (DisposeHandler.initFlag())
+			DisposeHandler.disposeAll();
 	}
 }
