@@ -1,47 +1,44 @@
 package com.flxkbr.hunger.load;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class DisposeHandler {
 	
+	public static final String TAG = "DisposeHandler";
+	
 	public enum DisposeTime {
 		INIT, RUNTIME, EXIT;
 	}
 	
-	
 	private static DisposeHandler disposer;
 	
-	private Array<Disposable> disposables;
+	private Array<HRDisposable> disposables;
 	private Array<DisposeRequestable> requestables;
-	private Array<Disposable> runtimeDisposables;
-	private Array<Disposable> afterInitDisposables;
+	private Array<HRDisposable> runtimeDisposables;
+	private Array<HRDisposable> afterInitDisposables;
 	
 	private DisposeHandler() {
-		disposables = new Array<Disposable>();
-		runtimeDisposables = new Array<Disposable>();
-		afterInitDisposables = new Array<Disposable>();
+		disposables = new Array<HRDisposable>();
+		runtimeDisposables = new Array<HRDisposable>();
+		afterInitDisposables = new Array<HRDisposable>();
 		requestables = new Array<DisposeRequestable>();
 	}
 	
-	public static void init() {
-		disposer = new DisposeHandler();
+	public static DisposeHandler get() {
+		if (disposer == null) {
+			disposer = new DisposeHandler();
+		}
+		return disposer;
 	}
 	
-	public static boolean initFlag() {
-		return (disposer != null);
+	public void registerDisposable(HRDisposable disp) {
+		registerDisposable(disp, DisposeTime.EXIT);
 	}
 	
-	public static void registerDisposable(Disposable disp) {
-		disposer.regDisposable(disp, DisposeTime.EXIT);
-	}
-	
-	public static void registerDisposable(Disposable disp, DisposeTime when) {
-		disposer.regDisposable(disp, when);
-	}
-	
-	private void regDisposable(Disposable disp, DisposeTime when) {
+	public void registerDisposable(HRDisposable disp, DisposeTime when) {
 		switch (when) {
 		case EXIT:
 			disposables.add(disp);
@@ -54,37 +51,29 @@ public class DisposeHandler {
 			break;
 		}
 	}
+
 	
-	public static void registerRequestable(DisposeRequestable disreq) {
-		disposer.regRequestable(disreq);
-	}
-	
-	private void regRequestable(DisposeRequestable disreq) {
+	public void registerRequestable(DisposeRequestable disreq) {
 		requestables.add(disreq);
 	}
 	
-	public static void disposeAll() {
-		disposer.dispAll();
+	public void disposeAll() {
 		requestDisposeAll();
-	}
-	
-	private void dispAll() {
 		for (Disposable disp : disposables) {
+			Gdx.app.log(TAG, disp.toString());
 			disp.dispose();
 		}
 		for (Disposable disp : runtimeDisposables) {
+			Gdx.app.log(TAG, disp.toString());
 			disp.dispose();
 		}
 		for (Disposable disp : afterInitDisposables) {
+			Gdx.app.log(TAG, disp.toString());
 			disp.dispose();
 		}
 	}
 	
-	public static void requestDisposeAll() {
-		disposer.reqDisposeAll();
-	}
-	
-	private void reqDisposeAll() {
+	public void requestDisposeAll() {
 		for (DisposeRequestable dr : requestables) {
 			dr.requestDispose();
 		}

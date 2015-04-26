@@ -10,7 +10,7 @@ public class LoaderTest implements RoyalTest {
 
 	@Override
 	public void init() {
-		loader = LoadManager.getLoadManager();
+		loader = LoadManager.get();
 	}
 
 	@Override

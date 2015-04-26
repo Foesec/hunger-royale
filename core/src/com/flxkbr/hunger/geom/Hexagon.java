@@ -19,6 +19,7 @@ public class Hexagon {
 	private int terrainType;
 	private Vector2 axial = new Vector2();
 	private Vector3 cube = new Vector3();
+	//private Vector2 screenPosition = new Vector2();
 
 	public Hexagon() {
 		//size = 1;
@@ -107,6 +108,14 @@ public class Hexagon {
 		axial.x = x;
 		axial.y = y;
 		initialize(false);
+	}
+	
+	public void setScreenPosition(Vector2 screenPos) {
+		center = screenPos;
+	}
+	
+	public void setCenter(Vector2 center) {
+		this.center = center;
 	}
 	
 	public int getOffsetX() {

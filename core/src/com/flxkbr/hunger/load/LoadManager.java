@@ -3,13 +3,10 @@ package com.flxkbr.hunger.load;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.flxkbr.hunger.testing.LogHandler;
 
-public class LoadManager implements Disposable {
+public class LoadManager extends HRDisposable {
 	
 	private static LoadManager manager;
 	
@@ -18,22 +15,17 @@ public class LoadManager implements Disposable {
 	private ObjectMap<String, String> rawtextfiles;
 	
 	private LoadManager() {
+		super();
 		textures = new ObjectMap<String, Texture>();
 		strings = new ObjectMap<String, String>();
 		rawtextfiles = new ObjectMap<String, String>();
-		DisposeHandler.registerDisposable(this);
 	}
 	
-	public static LoadManager getLoadManager() {
+	public static LoadManager get() {
 		if (manager == null) {
 			manager = new LoadManager();
 		}
 		return manager;
-	}
-	
-	public static void globalDispose() {
-		if (manager != null) 
-			manager.dispose();
 	}
 	
 	public void dispose() {

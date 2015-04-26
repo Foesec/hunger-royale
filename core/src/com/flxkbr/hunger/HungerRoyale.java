@@ -14,17 +14,14 @@ public class HungerRoyale extends ApplicationAdapter {
 	
 	RenderMaster renderer;
 	LogicMaster updater;
+	DisposeHandler cleaner;
 	
 	@Override
 	public void create () {
+		renderer = RenderMaster.get();
+		updater = LogicMaster.get();
+		cleaner = DisposeHandler.get();
 		
-		TestHandler testy = new TestHandler();
-		
-		testy.submitTest(new LoaderTest());
-		testy.run();
-		
-		renderer = RenderMaster.getRenderMaster();
-		updater = LogicMaster.getLogicMaster();
 	}
 
 	@Override
@@ -37,8 +34,6 @@ public class HungerRoyale extends ApplicationAdapter {
 	
 	@Override
 	public void dispose() {
-		LoadManager.globalDispose();
-		if (DisposeHandler.initFlag())
-			DisposeHandler.disposeAll();
+		cleaner.disposeAll();
 	}
 }

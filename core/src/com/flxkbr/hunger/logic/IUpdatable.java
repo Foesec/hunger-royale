@@ -1,7 +1,10 @@
 package com.flxkbr.hunger.logic;
 
-public interface IUpdatable {
+import com.flxkbr.hunger.connectors.IRegisterable;
+
+public interface IUpdatable extends IRegisterable {
 	
 	public void update();
+	public int getPriority();
 
 }
