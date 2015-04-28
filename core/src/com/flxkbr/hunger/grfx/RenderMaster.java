@@ -34,7 +34,7 @@ public class RenderMaster extends HRDisposable {
 		return master;
 	}
 	
-	public void registerRenderable(int i, IRenderable rend) {
+	public void registerRenderable(IRenderable rend) {
 		Gdx.app.log("RENDERMASTER", "Trying to add renderable to renderPipeline - good luck!");
 		renderPipeline.get(rend.getPriority()).add(rend);
 	}
