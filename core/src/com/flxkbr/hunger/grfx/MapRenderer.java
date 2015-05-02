@@ -2,11 +2,14 @@ package com.flxkbr.hunger.grfx;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.flxkbr.hunger.GlobalConstants;
 import com.flxkbr.hunger.geom.HexMap;
 
 public class MapRenderer implements IRenderable {
 	
 	public static final int PRIO = 1;
+	
+	private float viewportWidth = GlobalConstants.VIEWPORTWIDTH;
 	
 	private HexMap currentMap;
 	private boolean active;
@@ -46,6 +49,10 @@ public class MapRenderer implements IRenderable {
 	@Override
 	public int getPriority() {
 		return PRIO;
+	}
+	
+	private float getScale(float pixelSize, float scaleToWorld) {
+		return (viewportWidth*scaleToWorld) /  pixelSize;
 	}
 
 }

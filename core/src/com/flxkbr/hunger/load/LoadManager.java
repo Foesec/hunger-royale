@@ -60,6 +60,9 @@ public class LoadManager extends HRDisposable {
 	}
 	
 	public boolean loadTexture(String filename) {
+		if (textures.containsKey(filename.replaceAll("\\.png", ""))) {
+			return true;
+		}
 		String fn = filename.endsWith(".png") ? filename : filename+".png";
 		FileHandle f = Gdx.files.internal("textures/"+fn);
 		if (f.exists()) {
@@ -73,11 +76,9 @@ public class LoadManager extends HRDisposable {
 		}
 	}
 	
-	public Texture getTexture(String key) throws Exception {
-		if (textures.containsKey(key)) {
-			return textures.get(key);
-		}
-		else if (loadTexture(key)) {
+	public Texture getTexture(String filename) throws Exception {
+		String key = filename.replaceAll("\\.png", "");
+		if (loadTexture(key)) {
 			return textures.get(key);
 		} else {
 			throw new GdxRuntimeException("Texture "+ key +" could not be loaded");

@@ -103,7 +103,7 @@ public class HexMap {
 		map = new Array<Hexagon>(WIDTH * HEIGHT);
 		for (int y = 0; y < HEIGHT; ++y) {
 			for (int x = 0; x < WIDTH; ++x) {
-				map.add(new Hexagon(true, x, y, (int) HEX_SIZE, dummyMap.get(x + y * WIDTH), offsetToPixel(x, y)));
+				map.add(new Hexagon(true, x, y, (int) HEX_SIZE, dummyMap.get(x + y * WIDTH), offsetToWorld(x, y)));
 			}
 		}
 		jsonMap = new JsonMap(dummyMap, WIDTH, "negers", new Array<String>(new String[] { "point", "less" }));
@@ -183,7 +183,7 @@ public class HexMap {
 		return (int) (Math.abs(a.x - b.x) + Math.abs(a.y - b.y) + Math.abs(a.z - b.z)) / 2;
 	}
 
-	private Vector2 offsetToPixel(int x, int y) {
+	private Vector2 offsetToWorld(int x, int y) {
 		float xp = HEX_SIZE * 3 / 2 * x;
 		float yp = AXPIXFACTOR * (y - 0.5f * (x & 1));
 		return new Vector2(xp, yp);
@@ -199,7 +199,7 @@ public class HexMap {
 			for (int i = 0; i < jsonMap.getMap().size; ++i) {
 				int x = i % WIDTH;
 				int y = i / WIDTH;
-				map.add(new Hexagon(true, x, y, offsetToPixel(x, y)));
+				map.add(new Hexagon(true, x, y, offsetToWorld(x, y)));
 			}
 			Gdx.app.debug(HexMap.class.toString(), "JsonMap successfully read into Hexagon Map");
 		} else {
