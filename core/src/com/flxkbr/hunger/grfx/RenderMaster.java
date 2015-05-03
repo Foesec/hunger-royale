@@ -2,19 +2,18 @@ package com.flxkbr.hunger.grfx;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.flxkbr.hunger.GlobalConstants;
-import com.flxkbr.hunger.geom.HexMap;
+import com.flxkbr.hunger.connectors.MapScreenMaster;
+import com.flxkbr.hunger.input.MapScreenInputHandler;
 import com.flxkbr.hunger.load.HRDisposable;
-import com.flxkbr.hunger.load.LoadManager;
 
 public class RenderMaster extends HRDisposable {
 	
 	public static final int RENDERLEVELS = 5;
 	
+	private static float WORLDSCALE;
 	private static RenderMaster master;
 	
 	private final float viewportWidth = GlobalConstants.VIEWPORTWIDTH;
@@ -27,8 +26,8 @@ public class RenderMaster extends HRDisposable {
 	
 	private float camSpeed = GlobalConstants.Settings.CAMERASENSITIVITY;
 	
-	MapRenderer mr;
-	HexMap hm;
+	private MapScreenMaster msmaster;
+
 	
 	private RenderMaster() throws Exception {
 		super();
@@ -39,20 +38,29 @@ public class RenderMaster extends HRDisposable {
 		mainCam = new OrthographicCamera(viewportWidth, viewportHeight);
 		mainCam.setToOrtho(true, viewportWidth, viewportWidth*aspectRatio);
 		mainCam.position.set(viewportWidth / 2f - 5, mainCam.viewportHeight / 2f - 10, 0);
+		
 		for (int i = 0; i < RENDERLEVELS; ++i) {
 			renderPipeline.add(new Array<IRenderable>());
 		}
-		
-		mr = new MapRenderer();
-		hm = new HexMap("test");
-		mr.setMap(hm);
+		WORLDSCALE = viewportWidth / (float)Gdx.graphics.getWidth();
+		Gdx.app.log("WORLDSCALE", WORLDSCALE+"");
+	}
+	
+	public static float getWorldScale() {
+		return WORLDSCALE;
 	}
 	
 	public static RenderMaster get() throws Exception {
 		if (master==null) {
 			master = new RenderMaster();
+			master.msmaster = MapScreenMaster.get();
+			master.msmaster.init("test");
 		}
 		return master;
+	}
+	
+	public static OrthographicCamera getCurrentWorldCam() {
+		return master.mainCam;
 	}
 	
 	public void registerRenderable(IRenderable rend) {
@@ -73,7 +81,7 @@ public class RenderMaster extends HRDisposable {
 		mainCam.update();
 		mainBatch.setProjectionMatrix(mainCam.combined);
 		mainBatch.begin();
-		mr.render(mainBatch);
+		msmaster.renderScreen(mainBatch);
 		for (int i = 0; i < RENDERLEVELS; ++i) {
 			for (int j = 0; j < renderPipeline.get(i).size; ++j) {
 				renderPipeline.get(i).get(j).render(mainBatch);
@@ -89,7 +97,7 @@ public class RenderMaster extends HRDisposable {
 			}
 		}*/
 		mainBatch.dispose();
-		
+		msmaster.dispose();
 	}
 	
 	public void resize() {

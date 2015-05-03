@@ -1,10 +1,17 @@
 package com.flxkbr.hunger.connectors;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
+import com.flxkbr.hunger.GlobalConstants;
 import com.flxkbr.hunger.geom.HexMap;
 import com.flxkbr.hunger.gmobj.Map;
 import com.flxkbr.hunger.gmobj.Patient;
 import com.flxkbr.hunger.gmobj.Player;
+import com.flxkbr.hunger.grfx.MapRenderer;
+import com.flxkbr.hunger.grfx.RenderMaster;
+import com.flxkbr.hunger.input.MapScreenInputHandler;
 import com.flxkbr.hunger.logic.IUpdatable;
 import com.flxkbr.hunger.logic.LogicMaster;
 
@@ -15,8 +22,11 @@ public class MapScreenMaster implements IUpdatable {
 	private static MapScreenMaster master;
 
 	private HexMap currentMap;
+	private MapRenderer mapRend;
 	private Player player;
 	private Array<Patient> patients;
+	
+	private BitmapFont _bmf = new BitmapFont(true);
 	
 	private Map map;
 	
@@ -26,8 +36,16 @@ public class MapScreenMaster implements IUpdatable {
 		return master;
 	}
 	
+	public static HexMap getCurrentMap() {
+		return master.currentMap;
+	}
+	
+	public static BitmapFont _getBMF() {
+		return master._bmf;
+	}
+	
 	private MapScreenMaster() {
-		
+		_bmf.getData().setScale(RenderMaster.getWorldScale());
 	}
 	
 	/**
@@ -40,8 +58,15 @@ public class MapScreenMaster implements IUpdatable {
 	/**
 	 * tell renderMaster that logic has been applied
 	 */
-	private void renderScreen() {
-		
+	public void renderScreen(SpriteBatch batch) {
+		this.mapRend.render(batch);
+	}
+	
+	public void init(String mapName) throws Exception {
+		this.currentMap = new HexMap(mapName);
+		this.mapRend = new MapRenderer();
+		this.mapRend.setMap(currentMap);
+		Gdx.input.setInputProcessor(new MapScreenInputHandler());
 	}
 	
 	@Override
@@ -64,12 +89,16 @@ public class MapScreenMaster implements IUpdatable {
 	@Override
 	public void update() {
 		updateLogic();
-		renderScreen();
+		//renderScreen();
 	}
 
 	@Override
 	public void registerSelf() {
 		LogicMaster.get().registerUpdatable(this);
+	}
+	
+	public void dispose() {
+		_bmf.dispose();
 	}
 	
 }

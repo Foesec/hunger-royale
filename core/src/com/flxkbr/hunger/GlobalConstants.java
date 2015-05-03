@@ -3,15 +3,19 @@ package com.flxkbr.hunger;
 public final class GlobalConstants {
 	
 	public final class InputConstants {
-		public static final float HORIZONTALSCROLLMARGIN = 10f;
-		public static final float VERTICALSCROLLMARGIN = 8f;
+		public static final float HORSCRMARGIN_PERC = 0.2f;
+		public static final float HORIZONTALSCROLLMARGIN = HORSCRMARGIN_PERC * VIEWPORTWIDTH;
+		public static final float VERTSCRMARGIN_PERC = 0.2f;
+		public static final float VERTICALSCROLLMARGIN = VERTSCRMARGIN_PERC * VIEWPORTHEIGHT;
 	}
 	
 	public final class Settings {
-		public static final float CAMERASENSITIVITY = 10f;
+		private static final float SENS = 10f;
+		public static final float CAMERASENSITIVITY = (SENS / 100f) *VIEWPORTWIDTH;
 	}
 	
-	public static final float VIEWPORTWIDTH = 100f;
+	public static final float VIEWPORTWIDTH = 1920f;
+	public static final float VIEWPORTHEIGHT = 1080f;
 
 	public static final float SQRT3BY2 = (float) (Math.sqrt(3)/2.0);
 	public static final float SQRT3 = (float) Math.sqrt(3);

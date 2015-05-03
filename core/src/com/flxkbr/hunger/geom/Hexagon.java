@@ -6,7 +6,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
 import com.flxkbr.hunger.GlobalConstants;
+import com.flxkbr.hunger.connectors.MapScreenMaster;
 import com.flxkbr.hunger.grfx.HexTerrainLookup;
 import com.flxkbr.hunger.grfx.RenderMaster;
 
@@ -58,19 +60,29 @@ public class Hexagon {
 	
 	private void initialize(boolean offset) throws Exception {
 		if (offset) {
-			cube.x = offsetX;
-			cube.z = offsetY - (offsetX + (offsetX&1) / 2);
-			cube.y = -cube.x-cube.z;
-			axial.set(cube.x, cube.z);
+			cube.set(offsetToCube(offsetX, offsetY));
+			axial.set(cubeToAxial(cube));
+//			cube.x = offsetX;
+//			cube.z = offsetY - (offsetX + (offsetX&1) / 2);
+//			cube.y = -cube.x-cube.z;
+//			axial.set(cube.x, cube.z);
 		} else {
-			cube.set(axial.x, axial.y, -axial.x-axial.y);
-			offsetX = (int)cube.x;
-			offsetY = (int)(cube.z + (cube.x + ((int)cube.x & 1)) / 2);
+			cube.set(axialToCube(axial));
+			Vector2 ofst = axialToOffset(axial);
+			offsetX = (int)ofst.x;
+			offsetY = (int)ofst.y;
+//			cube.set(axial.x, axial.y, -axial.x-axial.y);
+//			offsetX = (int)cube.x;
+//			offsetY = (int)(cube.z + (cube.x + ((int)cube.x & 1)) / 2);
 		}
-		int[] tc = HexTerrainLookup.regionForTerrain(terrainType);
-		spr = new Sprite(HexTerrainLookup.textureForTerrain(terrainType), tc[0], tc[1], tc[2], tc[3]);
-		spr.setSize(width, height);
-		spr.setCenter(center.x, center.y);
+		
+		// terrainType < 0 --> out of bounds Hexagon
+		if (terrainType >= 0) {
+			int[] tc = HexTerrainLookup.regionForTerrain(terrainType);
+			spr = new Sprite(HexTerrainLookup.textureForTerrain(terrainType), tc[0], tc[1], tc[2], tc[3]);
+			spr.setSize(width, height);
+			spr.setCenter(center.x, center.y);
+		}
 		//Gdx.app.log(Hexagon.class.getName(), "offset: " + offsetX + "," + offsetY + ", center: " + center);
 	}
 	
@@ -102,15 +114,19 @@ public class Hexagon {
 		return new Vector3(x, y, z);
 	}
 	
+	public static Vector2 cubeToOffset(Vector3 cube) {
+		Vector2 offset = new Vector2();
+		offset.x = cube.x;
+		offset.y = cube.z + (cube.x + ((int)cube.x & 1)) / 2;
+		return offset;
+	}
+	
 	public static Vector2 cubeToAxial(Vector3 cube) {
 		return new Vector2(cube.x, cube.z);
 	}
 	
 	public static Vector2 axialToOffset(Vector2 axial) {
-		int x = (int)axial.x;
-		int zCube = (int)axial.y;
-		int y = zCube + (x + (x&1) / 2);
-		return new Vector2(x, y);
+		return cubeToOffset(axialToCube(axial));
 	}
 	
 	public static Vector3 offsetToCube(int x, int y) {
@@ -121,6 +137,7 @@ public class Hexagon {
 	
 	public void render(SpriteBatch batch) {
 		spr.draw(batch);
+		MapScreenMaster._getBMF().draw(batch, (int)axial.x + "," + (int)axial.y, center.x, center.y, 0, Align.center, false);
 	}
 	
 /*	public void moveAxial(Vector2 delta) {

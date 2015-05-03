@@ -29,6 +29,8 @@ public class HexMap {
 	private JsonMap jsonMap;
 	private Json json = new Json();
 	private IntArray dummyMap = new IntArray(new int[] { 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1 });
+	
+	private Hexagon oobHex = new Hexagon(true, -1, -1, -1, offsetToWorld(-1, -1));
 
 	/**
 	 * @throws Exception 
@@ -89,6 +91,10 @@ public class HexMap {
 			System.out.println(filename + ": " + jsonString);
 		}
 	}
+	
+	public Hexagon getByWorld(float x, float y) {
+		return getByAxial(worldToAxial(x,y));
+	}
 
 	private int axialDistance(Vector2 a, Vector2 b) {
 		Vector3 ac = Hexagon.axialToCube(a);
@@ -99,6 +105,9 @@ public class HexMap {
 	// give Hexagon located by axial coordinates
 	private Hexagon getByAxial(Vector2 axial) {
 		Vector2 offset = Hexagon.axialToOffset(axial);
+		if (offset.x < 0 || offset.y < 0) {
+			return oobHex;
+		}
 		return map.get((int) (offset.x + offset.y * WIDTH));
 	}
 
@@ -117,6 +126,17 @@ public class HexMap {
 	@Deprecated
 	private int cubeDistance(Vector3 a, Vector3 b) {
 		return (int) (Math.abs(a.x - b.x) + Math.abs(a.y - b.y) + Math.abs(a.z - b.z)) / 2;
+	}
+	
+	public Vector2 worldToAxial(float x, float y) {
+		Vector2 fract = new Vector2();
+		fract.x = x * (2f/3f) / HEX_SIZE;
+		fract.y = (float) ((-x / 3f + Math.sqrt(3) / 3f * y) / HEX_SIZE);
+		return axialRound(fract);
+	}
+	
+	public Vector2 worldToOffset(float x, float y) {
+		return Hexagon.axialToOffset(worldToAxial(x,y));
 	}
 
 	private Vector2 offsetToWorld(int x, int y) {
