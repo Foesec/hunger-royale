@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.flxkbr.hunger.GlobalConstants;
+import com.flxkbr.hunger.geom.HexMap;
 import com.flxkbr.hunger.load.HRDisposable;
 import com.flxkbr.hunger.load.LoadManager;
 
@@ -16,39 +17,38 @@ public class RenderMaster extends HRDisposable {
 	
 	private static RenderMaster master;
 	
-	private final float viewPortWidth = GlobalConstants.VIEWPORTWIDTH;
+	private final float viewportWidth = GlobalConstants.VIEWPORTWIDTH;
+	private final float viewportHeight;
 	private float aspectRatio;
 	
 	private SpriteBatch mainBatch;
 	private OrthographicCamera mainCam;
 	private Array<Array<IRenderable>> renderPipeline;
 	
-	private Texture testTex;
-	private Sprite testSpr;
+	private float camSpeed = GlobalConstants.Settings.CAMERASENSITIVITY;
 	
-	private RenderMaster() {
+	MapRenderer mr;
+	HexMap hm;
+	
+	private RenderMaster() throws Exception {
 		super();
 		mainBatch = new SpriteBatch();
 		renderPipeline = new Array<Array<IRenderable>>(5);
 		aspectRatio = (float)Gdx.graphics.getHeight()/(float)Gdx.graphics.getWidth();
-		mainCam = new OrthographicCamera(viewPortWidth, viewPortWidth*aspectRatio);
-		mainCam.position.set(viewPortWidth / 2f, mainCam.viewportHeight / 2f, 0);
+		viewportHeight = viewportWidth * aspectRatio;
+		mainCam = new OrthographicCamera(viewportWidth, viewportHeight);
+		mainCam.setToOrtho(true, viewportWidth, viewportWidth*aspectRatio);
+		mainCam.position.set(viewportWidth / 2f - 5, mainCam.viewportHeight / 2f - 10, 0);
 		for (int i = 0; i < RENDERLEVELS; ++i) {
 			renderPipeline.add(new Array<IRenderable>());
 		}
 		
-		try {
-			testTex = LoadManager.get().getTexture("prototype_hex");
-			testSpr = new Sprite(testTex, 0, 0, 128, 111);
-			float scl = viewPortWidth / (10 * testSpr.getWidth());
-			testSpr.setSize(testSpr.getWidth()*scl, testSpr.getHeight()*scl);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		mr = new MapRenderer();
+		hm = new HexMap("test");
+		mr.setMap(hm);
 	}
 	
-	public static RenderMaster get() {
+	public static RenderMaster get() throws Exception {
 		if (master==null) {
 			master = new RenderMaster();
 		}
@@ -69,13 +69,11 @@ public class RenderMaster extends HRDisposable {
 	}
 	
 	public void render() {
+		handleScrolling();
 		mainCam.update();
 		mainBatch.setProjectionMatrix(mainCam.combined);
 		mainBatch.begin();
-		for (int i = 0; i < 10; ++i) {
-			testSpr.setPosition(0, i*testSpr.getHeight()*0.999f);
-			testSpr.draw(mainBatch);
-		}
+		mr.render(mainBatch);
 		for (int i = 0; i < RENDERLEVELS; ++i) {
 			for (int j = 0; j < renderPipeline.get(i).size; ++j) {
 				renderPipeline.get(i).get(j).render(mainBatch);
@@ -96,5 +94,24 @@ public class RenderMaster extends HRDisposable {
 	
 	public void resize() {
 		
+	}
+	
+	public static float getScale(float pixelSize, float scaleToWorld) {
+		return (GlobalConstants.VIEWPORTWIDTH*scaleToWorld) /  pixelSize;
+	}
+	
+	private void handleScrolling() {
+		float mx = (Gdx.input.getX() / (float) Gdx.graphics.getWidth()) * viewportWidth;
+		if (mx < GlobalConstants.InputConstants.HORIZONTALSCROLLMARGIN) {
+			mainCam.translate(-camSpeed*Gdx.graphics.getDeltaTime(), 0);
+		} else if (mx > viewportWidth - GlobalConstants.InputConstants.HORIZONTALSCROLLMARGIN) {
+			mainCam.translate(camSpeed*Gdx.graphics.getDeltaTime(), 0);
+		}
+		float my = (Gdx.input.getY() / (float) Gdx.graphics.getHeight()) * viewportHeight;
+		if (my < GlobalConstants.InputConstants.VERTICALSCROLLMARGIN) {
+			mainCam.translate(0, -camSpeed*Gdx.graphics.getDeltaTime());
+		} else if (my > viewportHeight - GlobalConstants.InputConstants.VERTICALSCROLLMARGIN) {
+			mainCam.translate(0, camSpeed*Gdx.graphics.getDeltaTime());
+		}
 	}
 }

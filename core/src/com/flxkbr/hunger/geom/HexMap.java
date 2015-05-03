@@ -12,70 +12,6 @@ import com.flxkbr.hunger.GlobalConstants;
 
 public class HexMap {
 
-	private class JsonMap {
-		private IntArray map;
-		private int width;
-		private String name;
-		private Array<String> categories;
-
-		public JsonMap(int size) {
-			map = new IntArray();
-			width = size;
-			name = "EMPTY";
-			String[] smack = { "gaga", "fudi", "homo", "nohomo" };
-			categories = new Array<String>(smack);
-			testDataGeneration();
-		}
-
-		public JsonMap(IntArray map, int width, String name, Array<String> categories) {
-			this.map = map;
-			this.width = width;
-			this.name = name;
-			this.categories = categories;
-		}
-
-		public void dispose() {
-			categories.clear();
-			map.clear();
-		}
-
-		public Array<String> getCategories() {
-			return categories;
-		}
-
-		public IntArray getMap() {
-			return map;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public int getWidth() {
-			return width;
-		}
-
-		public void setCategories(Array<String> categories) {
-			this.categories = categories;
-		}
-
-		public void setMap(IntArray map) {
-			this.map = map;
-			width = (int) Math.sqrt(map.size);
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		private void testDataGeneration() {
-			for (int i = 0; i < width * width; ++i) {
-				map.add(MathUtils.random(3));
-			}
-			name = "fug me sily";
-		}
-	}
-	
 	public final static String MAPDIR = GlobalConstants.MAPDIR;
 	public final static String TAG = "HEXMAP";
 	
@@ -95,21 +31,22 @@ public class HexMap {
 	private IntArray dummyMap = new IntArray(new int[] { 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1 });
 
 	/**
+	 * @throws Exception 
 	 * @deprecated only for testing purposes
 	 */
 	@Deprecated
-	public HexMap() {
+	public HexMap() throws Exception {
 		WIDTH = HEIGHT = 4;
 		map = new Array<Hexagon>(WIDTH * HEIGHT);
 		for (int y = 0; y < HEIGHT; ++y) {
 			for (int x = 0; x < WIDTH; ++x) {
-				map.add(new Hexagon(true, x, y, (int) HEX_SIZE, dummyMap.get(x + y * WIDTH), offsetToWorld(x, y)));
+				map.add(new Hexagon(true, x, y, dummyMap.get(x + y * WIDTH), offsetToWorld(x, y)));
 			}
 		}
 		jsonMap = new JsonMap(dummyMap, WIDTH, "negers", new Array<String>(new String[] { "point", "less" }));
 	}
 
-	public HexMap(String filename) {
+	public HexMap(String filename) throws Exception {
 		parseFromJson(filename);
 	}
 
@@ -119,11 +56,11 @@ public class HexMap {
 		return new Vector2(hex.getAxial().add(dir));
 	}
 
-	public static Vector2 axialToPixel(Vector2 axial) {
-		float x = AXPIXFACTOR * (axial.x + axial.y / 2);
-		float y = HEX_SIZE * 3 / 2 * axial.y;
-		return new Vector2(x, y);
-	}
+//	public static Vector2 axialToPixel(Vector2 axial) {
+//		float x = AXPIXFACTOR * (axial.x + axial.y / 2);
+//		float y = HEX_SIZE * 3 / 2 * axial.y;
+//		return new Vector2(x, y);
+//	}
 
 	public void dispose() {
 		// TODO: check for disposables!
@@ -133,15 +70,14 @@ public class HexMap {
 		return map;
 	}
 
-	public void parseFromJson(String filename) {
+	public void parseFromJson(String filename) throws Exception {
 		String fn = filename.endsWith(".json") ? filename : filename + ".json";
 		FileHandle handle = Gdx.files.internal(MAPDIR + fn);
 		if (handle.exists()) {
-			jsonMap.dispose();
 			jsonMap = json.fromJson(JsonMap.class, handle);
-			Gdx.app.debug(HexMap.class.toString(), "Json Mapfile successfully read from file: " + fn);
+			Gdx.app.log(HexMap.class.getName(), "Json Mapfile successfully read from file: " + fn);
 		} else {
-			Gdx.app.error(HexMap.class.toString(), "Specified Json Mapfile >>" + fn + "<< does not exist!");
+			Gdx.app.error(HexMap.class.getName(), "Specified Json Mapfile >>" + fn + "<< does not exist!");
 		}
 		readMapFromJsonMap();
 	}
@@ -184,12 +120,12 @@ public class HexMap {
 	}
 
 	private Vector2 offsetToWorld(int x, int y) {
-		float xp = HEX_SIZE * 3 / 2 * x;
-		float yp = AXPIXFACTOR * (y - 0.5f * (x & 1));
+		float xp = HEX_SIZE * (3f / 2f) * (float)x;
+		float yp = (float) (HEX_SIZE * Math.sqrt(3) * ((float)y - 0.5f * (x & 1)));
 		return new Vector2(xp, yp);
 	}
 
-	private void readMapFromJsonMap() {
+	private void readMapFromJsonMap() throws Exception {
 		if (jsonMap != null) {
 			WIDTH = HEIGHT = jsonMap.getWidth();
 			if (map == null)
@@ -199,7 +135,7 @@ public class HexMap {
 			for (int i = 0; i < jsonMap.getMap().size; ++i) {
 				int x = i % WIDTH;
 				int y = i / WIDTH;
-				map.add(new Hexagon(true, x, y, offsetToWorld(x, y)));
+				map.add(new Hexagon(true, x, y, jsonMap.getMap().get(i), offsetToWorld(x, y)));
 			}
 			Gdx.app.debug(HexMap.class.toString(), "JsonMap successfully read into Hexagon Map");
 		} else {

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.flxkbr.hunger.GlobalConstants;
 import com.flxkbr.hunger.geom.HexMap;
+import com.flxkbr.hunger.geom.Hexagon;
 
 public class MapRenderer implements IRenderable {
 	
@@ -24,7 +25,9 @@ public class MapRenderer implements IRenderable {
 
 	@Override
 	public void render(SpriteBatch batch) {
-		
+		for (Hexagon hex : currentMap.getMap()) {
+			hex.render(batch);
+		}
 	}
 
 	@Override
@@ -39,7 +42,12 @@ public class MapRenderer implements IRenderable {
 	@Override
 	public void registerSelf() {
 		if (currentMap != null) {
-			RenderMaster.get().registerRenderable(this);
+			try {
+				RenderMaster.get().registerRenderable(this);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		else {
 			Gdx.app.error("MapRenderer", "No hexmap set - renderer not registered!");
@@ -49,10 +57,6 @@ public class MapRenderer implements IRenderable {
 	@Override
 	public int getPriority() {
 		return PRIO;
-	}
-	
-	private float getScale(float pixelSize, float scaleToWorld) {
-		return (viewportWidth*scaleToWorld) /  pixelSize;
 	}
 
 }

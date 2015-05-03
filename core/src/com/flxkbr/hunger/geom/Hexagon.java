@@ -1,15 +1,21 @@
 package com.flxkbr.hunger.geom;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.flxkbr.hunger.GlobalConstants;
+import com.flxkbr.hunger.grfx.HexTerrainLookup;
+import com.flxkbr.hunger.grfx.RenderMaster;
 
 public class Hexagon {
 	
 	// TODO: keep eye on float to int casts --> rounding errors?
 	
-	private final static float HEIGHT_FACTOR = (float) (Math.sqrt(3)/2.0);
+	private final static float HEIGHT_FACTOR = GlobalConstants.SQRT3BY2;//(float) (Math.sqrt(3)/2.0);
+	private final static float SIZESCALE = GlobalConstants.HEXSCALE;
 	
 	// based on even-q implementation --> (1, 0) goes up
 	private Vector2 center;
@@ -19,17 +25,23 @@ public class Hexagon {
 	private int terrainType;
 	private Vector2 axial = new Vector2();
 	private Vector3 cube = new Vector3();
-	//private Vector2 screenPosition = new Vector2();
+	
+	private Sprite spr;
 
-	public Hexagon() {
-		//size = 1;
-		offsetX = offsetY = 0;
-		center = new Vector2(0, 0);
-		terrainType = 0;
-		initialize(true);
+//	@Deprecated
+//	public Hexagon() throws Exception {
+//		//size = 1;
+//		offsetX = offsetY = 0;
+//		center = new Vector2(0, 0);
+//		terrainType = 0;
+//		initialize(true);
+//	}
+	
+	public Hexagon(boolean offset, int x, int y, Vector2 center) throws Exception {
+		this(offset, x, y, 0, center);
 	}
 	
-	public Hexagon(boolean offset, int x, int y, Vector2 center) {
+	public Hexagon(boolean offset, int x, int y, int terrainType, Vector2 center) throws Exception {
 		if (offset) {
 			this.offsetX = x;
 			this.offsetY = y;
@@ -39,17 +51,12 @@ public class Hexagon {
 			this.center = center;
 		}
 		width = 2 * size;
-		height = HEIGHT_FACTOR * size;
-		terrainType = 0;
+		height = HEIGHT_FACTOR * width;
+		this.terrainType = terrainType;
 		initialize(offset);
 	}
 	
-	public Hexagon(boolean offset, int x, int y, int size, int terrainType, Vector2 center) {
-		this(offset, x, y, center);
-		this.terrainType = terrainType;
-	}
-	
-	private void initialize(boolean offset) {
+	private void initialize(boolean offset) throws Exception {
 		if (offset) {
 			cube.x = offsetX;
 			cube.z = offsetY - (offsetX + (offsetX&1) / 2);
@@ -60,7 +67,26 @@ public class Hexagon {
 			offsetX = (int)cube.x;
 			offsetY = (int)(cube.z + (cube.x + ((int)cube.x & 1)) / 2);
 		}
+		int[] tc = HexTerrainLookup.regionForTerrain(terrainType);
+		spr = new Sprite(HexTerrainLookup.textureForTerrain(terrainType), tc[0], tc[1], tc[2], tc[3]);
+		spr.setSize(width, height);
+		spr.setCenter(center.x, center.y);
+		//Gdx.app.log(Hexagon.class.getName(), "offset: " + offsetX + "," + offsetY + ", center: " + center);
 	}
+	
+/*	private void recalculate(boolean offset) {
+		if (offset) {
+			cube.x = offsetX;
+			cube.z = offsetY - (offsetX + (offsetX&1) / 2);
+			cube.y = -cube.x-cube.z;
+			axial.set(cube.x, cube.z);
+		} else {
+			cube.set(axial.x, axial.y, -axial.x-axial.y);
+			offsetX = (int)cube.x;
+			offsetY = (int)(cube.z + (cube.x + ((int)cube.x & 1)) / 2);
+		}
+		spr.setCenter(center.x, center.y);
+	}*/
 	
 	public static Vector2 hexCorner(Vector2 center, int size, int i) {
 		float angle_deg = 60 * i;
@@ -93,21 +119,25 @@ public class Hexagon {
 		return new Vector3(x, yn, z);
 	}
 	
-	public void moveAxial(Vector2 delta) {
+	public void render(SpriteBatch batch) {
+		spr.draw(batch);
+	}
+	
+/*	public void moveAxial(Vector2 delta) {
 		axial.set(delta.x, delta.y);
-		initialize(false);
+		recalculate(false);
 	}
 	
 	public void setOffsetCoordinates(int x, int y) {
 		this.offsetX = x;
 		this.offsetY = y;
-		initialize(true);
+		recalculate(true);
 	}
 	
 	public void setAxialCoordinates(int x, int y) {
 		axial.x = x;
 		axial.y = y;
-		initialize(false);
+		recalculate(false);
 	}
 	
 	public void setScreenPosition(Vector2 screenPos) {
@@ -116,7 +146,7 @@ public class Hexagon {
 	
 	public void setCenter(Vector2 center) {
 		this.center = center;
-	}
+	}*/
 	
 	public int getOffsetX() {
 		return offsetX;

@@ -20,7 +20,12 @@ public class HungerRoyale extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
-		renderer = RenderMaster.get();
+		try {
+			renderer = RenderMaster.get();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		updater = LogicMaster.get();
 		cleaner = DisposeHandler.get();
 		loader = LoadManager.get();

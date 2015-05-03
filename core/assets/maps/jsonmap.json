@@ -1,0 +1,12 @@
+{
+map: {
+	items: [ 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1 ]
+	size: 16
+}
+width: 4
+name: negers
+categories: [
+	point
+	less
+]
+}
