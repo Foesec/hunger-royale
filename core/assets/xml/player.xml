@@ -1,0 +1,53 @@
+<player>
+    <personal>
+        <name>
+            Duskin Kelvi
+        </name>
+        <gender>
+        </gender>
+        <fate>
+            Ace
+        </fate>
+    </personal>
+    <stats>
+        <disposition>
+            <calculating>
+            </calculating>
+            <smart>
+            </smart>
+            <mad>
+            </mad>
+            <predictable>
+            </predictable>
+            <cunning>
+            </cunning>
+            <cooperative>
+            </cooperative>
+            <cautious>
+            </cautious>
+        </disposition>
+        <qualities>
+            <physique>
+            </physique>
+            <dexterity>
+            </dexterity>
+            <intelligence>
+            </intelligence>
+        </qualities>
+        <traits>
+            <insight>
+            </insight>
+            <serenity>
+            </serenity>
+            <bliss>
+            </bliss>
+            <charisma>
+            </charisma>
+            <perception>
+            </perception>
+            <facereading>
+            </facereading>
+        </traits>
+
+    </stats>
+</player>

@@ -10,12 +10,13 @@ import com.flxkbr.hunger.gmobj.Map;
 import com.flxkbr.hunger.gmobj.Patient;
 import com.flxkbr.hunger.gmobj.Player;
 import com.flxkbr.hunger.grfx.MapRenderer;
+import com.flxkbr.hunger.grfx.MasterRenderable;
 import com.flxkbr.hunger.grfx.RenderMaster;
 import com.flxkbr.hunger.input.MapScreenInputHandler;
 import com.flxkbr.hunger.logic.IUpdatable;
 import com.flxkbr.hunger.logic.LogicMaster;
 
-public class MapScreenMaster implements IUpdatable {
+public class MapScreenMaster implements IUpdatable, MasterRenderable {
 	
 	public static final int PRIO = 0;
 	
@@ -47,6 +48,16 @@ public class MapScreenMaster implements IUpdatable {
 	private MapScreenMaster() {
 		_bmf.getData().setScale(RenderMaster.getWorldScale());
 	}
+
+	@Override
+	public void masterRender(SpriteBatch batch) {
+		renderScreen(batch);
+	}
+
+	@Override
+	public void registerToRenderMaster() {
+		// TODO register to renderMaster
+	}
 	
 	/**
 	 * calculate what's gonna happen next
@@ -58,14 +69,15 @@ public class MapScreenMaster implements IUpdatable {
 	/**
 	 * tell renderMaster that logic has been applied
 	 */
-	public void renderScreen(SpriteBatch batch) {
-		this.mapRend.render(batch);
+	private void renderScreen(SpriteBatch batch) {
+		this.map.render(batch);
 	}
 	
 	public void init(String mapName) throws Exception {
 		this.currentMap = new HexMap(mapName);
 		this.mapRend = new MapRenderer();
 		this.mapRend.setMap(currentMap);
+		this.map = new Map(currentMap, mapRend);
 		Gdx.input.setInputProcessor(new MapScreenInputHandler());
 	}
 	

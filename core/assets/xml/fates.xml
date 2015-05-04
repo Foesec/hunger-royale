@@ -1,0 +1,23 @@
+<fates>
+    <fate id="0">
+        <name>
+            Ace
+        </name>
+        <history>
+        </history>
+    </fate>
+    <fate id="1">
+        <name>
+            Trialed
+        </name>
+        <history>
+        </history>
+    </fate>
+    <fate id="2">
+        <name>
+            Good-for-nothing
+        </name>
+        <history>
+        </history>
+    </fate>
+</fates>

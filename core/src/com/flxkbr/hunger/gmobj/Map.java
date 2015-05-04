@@ -1,7 +1,9 @@
 package com.flxkbr.hunger.gmobj;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Array;
 import com.flxkbr.hunger.geom.HexMap;
+import com.flxkbr.hunger.geom.Hexagon;
 import com.flxkbr.hunger.grfx.IRenderable;
 import com.flxkbr.hunger.grfx.MapRenderer;
 import com.flxkbr.hunger.load.HRDisposable;
@@ -9,11 +11,17 @@ import com.flxkbr.hunger.logic.IUpdatable;
 
 public class Map extends HRDisposable implements IRenderable, IUpdatable {
 	
-	HexMap mapData;
-	MapRenderer renderer;
+	private HexMap mapGeom;
+	private MapRenderer mapRend;
 	
-	public Map() {
+	Array<HexData> mapData;
+	
+	
+	public Map(HexMap map, MapRenderer renderer) {
 		super();
+		this.mapGeom = map;
+		this.mapRend = renderer;
+		processGeomToMap();
 	}
 
 	@Override
@@ -41,8 +49,7 @@ public class Map extends HRDisposable implements IRenderable, IUpdatable {
 
 	@Override
 	public void render(SpriteBatch batch) {
-		// TODO Auto-generated method stub
-		
+		this.mapRend.render(batch);
 	}
 
 	public void registerAsRenderable() {
@@ -54,5 +61,12 @@ public class Map extends HRDisposable implements IRenderable, IUpdatable {
 	public boolean isActive() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	private void processGeomToMap() {
+		mapData = new Array<HexData>(mapGeom.getMap().size);
+		for (Hexagon hex : mapGeom.getMap()) {
+			mapData.add(new HexData(hex.getAxial()));
+		}
 	}
 }

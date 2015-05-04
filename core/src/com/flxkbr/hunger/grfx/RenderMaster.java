@@ -81,7 +81,7 @@ public class RenderMaster extends HRDisposable {
 		mainCam.update();
 		mainBatch.setProjectionMatrix(mainCam.combined);
 		mainBatch.begin();
-		msmaster.renderScreen(mainBatch);
+		msmaster.masterRender(mainBatch);
 		for (int i = 0; i < RENDERLEVELS; ++i) {
 			for (int j = 0; j < renderPipeline.get(i).size; ++j) {
 				renderPipeline.get(i).get(j).render(mainBatch);
