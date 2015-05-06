@@ -1,6 +1,5 @@
 package com.flxkbr.hunger.geom;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -10,34 +9,25 @@ import com.badlogic.gdx.utils.Align;
 import com.flxkbr.hunger.GlobalConstants;
 import com.flxkbr.hunger.connectors.MapScreenMaster;
 import com.flxkbr.hunger.grfx.HexTerrainLookup;
-import com.flxkbr.hunger.grfx.RenderMaster;
 
 public class Hexagon {
 	
 	// TODO: keep eye on float to int casts --> rounding errors?
 	
 	private final static float HEIGHT_FACTOR = GlobalConstants.SQRT3BY2;//(float) (Math.sqrt(3)/2.0);
-	private final static float SIZESCALE = GlobalConstants.HEXSCALE;
+	private final static float HEXWIDTH = GlobalConstants.HEXWIDTH;
+	private final static float HEXHEIGHT = GlobalConstants.HEXHEIGHT;
+	private final static float HEXSIZE = GlobalConstants.HEXSIZE;
+	//private final static float SIZESCALE = GlobalConstants.SPRITESCALE;
 	
 	// based on even-q implementation --> (1, 0) goes up
 	private Vector2 center;
-	private float size = GlobalConstants.HEXSIZE;
-	private float height, width;
 	private int offsetX, offsetY;
 	private int terrainType;
 	private Vector2 axial = new Vector2();
 	private Vector3 cube = new Vector3();
 	
 	private Sprite spr;
-
-//	@Deprecated
-//	public Hexagon() throws Exception {
-//		//size = 1;
-//		offsetX = offsetY = 0;
-//		center = new Vector2(0, 0);
-//		terrainType = 0;
-//		initialize(true);
-//	}
 	
 	public Hexagon(boolean offset, int x, int y, Vector2 center) throws Exception {
 		this(offset, x, y, 0, center);
@@ -52,8 +42,7 @@ public class Hexagon {
 			axial.set(x, y);
 			this.center = center;
 		}
-		width = 2 * size;
-		height = HEIGHT_FACTOR * width;
+
 		this.terrainType = terrainType;
 		initialize(offset);
 	}
@@ -80,7 +69,7 @@ public class Hexagon {
 		if (terrainType >= 0) {
 			int[] tc = HexTerrainLookup.regionForTerrain(terrainType);
 			spr = new Sprite(HexTerrainLookup.textureForTerrain(terrainType), tc[0], tc[1], tc[2], tc[3]);
-			spr.setSize(width, height);
+			spr.setSize(HEXWIDTH, HEXHEIGHT);
 			spr.setCenter(center.x, center.y);
 		}
 		//Gdx.app.log(Hexagon.class.getName(), "offset: " + offsetX + "," + offsetY + ", center: " + center);
@@ -186,11 +175,11 @@ public class Hexagon {
 	}
 	
 	public float getWidth() {
-		return width;
+		return HEXWIDTH;
 	}
 	
 	public float getHeight() {
-		return height;
+		return HEXHEIGHT;
 	}
 	
 	public int getTerrainType() {

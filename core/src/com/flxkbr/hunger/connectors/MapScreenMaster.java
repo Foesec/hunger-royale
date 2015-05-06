@@ -22,8 +22,6 @@ public class MapScreenMaster implements IUpdatable, MasterRenderable {
 	
 	private static MapScreenMaster master;
 
-	private HexMap currentMap;
-	private MapRenderer mapRend;
 	private Player player;
 	private Array<Patient> patients;
 	
@@ -37,8 +35,8 @@ public class MapScreenMaster implements IUpdatable, MasterRenderable {
 		return master;
 	}
 	
-	public static HexMap getCurrentMap() {
-		return master.currentMap;
+	public static Map getCurrentMap() {
+		return master.map;
 	}
 	
 	public static BitmapFont _getBMF() {
@@ -74,10 +72,7 @@ public class MapScreenMaster implements IUpdatable, MasterRenderable {
 	}
 	
 	public void init(String mapName) throws Exception {
-		this.currentMap = new HexMap(mapName);
-		this.mapRend = new MapRenderer();
-		this.mapRend.setMap(currentMap);
-		this.map = new Map(currentMap, mapRend);
+		this.map = new Map(mapName);
 		Gdx.input.setInputProcessor(new MapScreenInputHandler());
 	}
 	

@@ -13,20 +13,31 @@ public class Map extends HRDisposable implements IRenderable, IUpdatable {
 	
 	private HexMap mapGeom;
 	private MapRenderer mapRend;
+	private Array<HexData> mapData;
 	
-	Array<HexData> mapData;
-	
-	
+	@Deprecated
 	public Map(HexMap map, MapRenderer renderer) {
 		super();
 		this.mapGeom = map;
 		this.mapRend = renderer;
 		processGeomToMap();
 	}
+	
+	public Map(String mapName) throws Exception {
+		super();
+		initialize(mapName);
+		processGeomToMap();
+	}
+	
+	public void initialize(String mapName) throws Exception {
+		this.mapGeom = new HexMap(mapName);
+		this.mapRend = new MapRenderer();
+		this.mapRend.setMap(mapGeom);
+	}
 
 	@Override
 	public void dispose() {
-		
+		mapGeom.dispose();
 	}
 
 	@Override
@@ -52,11 +63,6 @@ public class Map extends HRDisposable implements IRenderable, IUpdatable {
 		this.mapRend.render(batch);
 	}
 
-	public void registerAsRenderable() {
-		// TODO Auto-generated method stub
-		
-	}
-
 	@Override
 	public boolean isActive() {
 		// TODO Auto-generated method stub
@@ -68,5 +74,17 @@ public class Map extends HRDisposable implements IRenderable, IUpdatable {
 		for (Hexagon hex : mapGeom.getMap()) {
 			mapData.add(new HexData(hex.getAxial()));
 		}
+	}
+
+	public HexMap getGeometry() {
+		return mapGeom;
+	}
+
+	public MapRenderer getRenderer() {
+		return mapRend;
+	}
+
+	public Array<HexData> getMapData() {
+		return mapData;
 	}
 }

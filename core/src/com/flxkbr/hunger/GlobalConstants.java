@@ -19,10 +19,11 @@ public final class GlobalConstants {
 
 	public static final float SQRT3BY2 = (float) (Math.sqrt(3)/2.0);
 	public static final float SQRT3 = (float) Math.sqrt(3);
-	public static final float HEXSCALETOWORLD = 0.1f;
-	public static final float HEXWIDTH = VIEWPORTWIDTH*HEXSCALETOWORLD;
+	public static final float HEXTOWORLD = 0.1f;
+	public static final float HEXWIDTH = VIEWPORTWIDTH*HEXTOWORLD;
+	public static final float HEXHEIGHT = SQRT3BY2 * HEXWIDTH;
 	public static final float HEXSIZE = HEXWIDTH/2f;
-	public static final float HEXSCALE = HEXWIDTH /  128f;
+	public static final float SPRITESCALE = HEXWIDTH /  128f;
 	public static final float AXPIXFACTOR = HEXWIDTH * SQRT3BY2;
 	
 	public static final String MAPDIR = "maps/";
