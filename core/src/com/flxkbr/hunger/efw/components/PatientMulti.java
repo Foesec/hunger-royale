@@ -1,11 +1,11 @@
 package com.flxkbr.hunger.efw.components;
 
-import com.flxkbr.hunger.efw.components.general.Position;
 import com.flxkbr.hunger.efw.components.human.Disposition;
 import com.flxkbr.hunger.efw.components.human.Hunger;
 import com.flxkbr.hunger.efw.components.human.Qualities;
 import com.flxkbr.hunger.efw.components.human.Traits;
 import com.flxkbr.hunger.efw.components.human.Vigour;
+import com.flxkbr.hunger.efw.systems.Position;
 
 public class PatientMulti {
 

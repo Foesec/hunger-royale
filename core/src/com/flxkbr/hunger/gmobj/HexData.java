@@ -2,8 +2,8 @@ package com.flxkbr.hunger.gmobj;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.flxkbr.hunger.efw.components.general.Position;
 import com.flxkbr.hunger.efw.components.mapdata.Terrain;
+import com.flxkbr.hunger.efw.systems.Position;
 
 public class HexData {
 
@@ -18,9 +18,8 @@ public class HexData {
 	private Array<Item> treasures;
 	private Array<Resource> resources;
 	
-	public HexData(Vector2 position) {
+	public HexData(Vector2 axial) {
 		this.position = new Position();
-		this.position.pos.x = position.x;
-		this.position.pos.y = position.y;
+		this.position.setByAxial(axial);
 	}
 }

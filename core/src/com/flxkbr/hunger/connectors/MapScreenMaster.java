@@ -3,13 +3,14 @@ package com.flxkbr.hunger.connectors;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.flxkbr.hunger.GlobalConstants;
-import com.flxkbr.hunger.geom.HexMap;
+import com.flxkbr.hunger.connectors.helpers.MapScreenSelection;
+import com.flxkbr.hunger.geom.HexMath;
+import com.flxkbr.hunger.geom.Hexagon;
 import com.flxkbr.hunger.gmobj.Map;
 import com.flxkbr.hunger.gmobj.Patient;
 import com.flxkbr.hunger.gmobj.Player;
-import com.flxkbr.hunger.grfx.MapRenderer;
 import com.flxkbr.hunger.grfx.MasterRenderable;
 import com.flxkbr.hunger.grfx.RenderMaster;
 import com.flxkbr.hunger.input.MapScreenInputHandler;
@@ -28,8 +29,9 @@ public class MapScreenMaster implements IUpdatable, MasterRenderable {
 	private BitmapFont _bmf = new BitmapFont(true);
 	
 	private Map map;
+	private MapScreenSelection selector;
 	
-	public static MapScreenMaster get() {
+	public static MapScreenMaster get() throws Exception {
 		if (master == null)
 			master = new MapScreenMaster();
 		return master;
@@ -43,44 +45,27 @@ public class MapScreenMaster implements IUpdatable, MasterRenderable {
 		return master._bmf;
 	}
 	
-	private MapScreenMaster() {
+	private MapScreenMaster() throws Exception {
 		_bmf.getData().setScale(RenderMaster.getWorldScale());
+		player = Player.get();
+		selector = new MapScreenSelection();
 	}
 
-	@Override
-	public void masterRender(SpriteBatch batch) {
-		renderScreen(batch);
-	}
-
-	@Override
-	public void registerToRenderMaster() {
-		// TODO register to renderMaster
+	public void init(String mapName) throws Exception {
+		this.map = new Map(mapName);
+		Gdx.input.setInputProcessor(new MapScreenInputHandler(this));
 	}
 	
-	/**
-	 * calculate what's gonna happen next
-	 */
 	private void updateLogic() {
 		
 	}
-	
-	/**
-	 * tell renderMaster that logic has been applied
-	 */
+
 	private void renderScreen(SpriteBatch batch) {
 		this.map.render(batch);
+		this.selector.render(batch);
+		this.player.render(batch);
 	}
-	
-	public void init(String mapName) throws Exception {
-		this.map = new Map(mapName);
-		Gdx.input.setInputProcessor(new MapScreenInputHandler());
-	}
-	
-	@Override
-	public int getPriority() {
-		return PRIO;
-	}
-	
+
 	public void setMap(Map map) {
 		this.map = map;
 	}
@@ -91,6 +76,19 @@ public class MapScreenMaster implements IUpdatable, MasterRenderable {
 	
 	public void setPatients(Array<Patient> pats) {
 		this.patients = pats;
+	}
+	
+	public boolean leftClickAtWorld(float x, float y) {
+		Vector2 axial = HexMath.worldToAxial(x, y);
+		Hexagon selection = map.getHexagonByAxial(axial);
+		this.selector.setSelection(selection);
+		
+		return true;
+	}
+	
+	public boolean rightClickAtWorld(float x, float y) {
+		this.selector.deselect();
+		return true;
 	}
 
 	@Override
@@ -106,6 +104,21 @@ public class MapScreenMaster implements IUpdatable, MasterRenderable {
 	
 	public void dispose() {
 		_bmf.dispose();
+	}
+
+	@Override
+	public void masterRender(SpriteBatch batch) {
+		renderScreen(batch);
+	}
+
+	@Override
+	public void registerToRenderMaster() {
+		// TODO register to renderMaster
+	}
+
+	@Override
+	public int getPriority() {
+		return PRIO;
 	}
 	
 }

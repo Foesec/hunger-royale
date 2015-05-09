@@ -3,9 +3,9 @@ package com.flxkbr.hunger;
 public final class GlobalConstants {
 	
 	public final class InputConstants {
-		public static final float HORSCRMARGIN_PERC = 0.2f;
+		public static final float HORSCRMARGIN_PERC = 0.1f;
 		public static final float HORIZONTALSCROLLMARGIN = HORSCRMARGIN_PERC * VIEWPORTWIDTH;
-		public static final float VERTSCRMARGIN_PERC = 0.2f;
+		public static final float VERTSCRMARGIN_PERC = 0.1f;
 		public static final float VERTICALSCROLLMARGIN = VERTSCRMARGIN_PERC * VIEWPORTHEIGHT;
 	}
 	

@@ -10,16 +10,13 @@ import com.flxkbr.hunger.grfx.RenderMaster;
 
 public class MapScreenInputHandler implements InputProcessor {
 	
-	OrthographicCamera currentCam;
-	Map currentMap;
+	private OrthographicCamera currentCam;
+	private MapScreenMaster master;
+	//private Map currentMap;
 	
-	public MapScreenInputHandler() {
-		currentCam = RenderMaster.getCurrentWorldCam();
-		currentMap = MapScreenMaster.getCurrentMap();
-	}
-	
-	public MapScreenInputHandler(OrthographicCamera cam) {
-		currentCam = cam;
+	public MapScreenInputHandler(MapScreenMaster master) {
+		this.currentCam = RenderMaster.getCurrentWorldCam();
+		this.master = master;
 	}
 	
 	public void setCamera(OrthographicCamera cam) {
@@ -47,8 +44,11 @@ public class MapScreenInputHandler implements InputProcessor {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		Vector3 world = currentCam.unproject(new Vector3(screenX, screenY, 0));
-		Gdx.app.log("INPUT - world", world.toString());
-		Gdx.app.log("INPUT - axial", MapScreenMaster.getCurrentMap().getGeometry().getByWorld(world.x, world.y).getTerrainType()+"");
+		if (button == 0) {
+			return master.leftClickAtWorld(world.x, world.y);
+		} else if (button == 1) {
+			return master.rightClickAtWorld(world.x, world.y);
+		}
 		return false;
 	}
 

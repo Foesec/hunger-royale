@@ -1,5 +1,6 @@
 package com.flxkbr.hunger.gmobj;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.flxkbr.hunger.efw.components.PatientMulti;
 import com.flxkbr.hunger.grfx.PlayerRenderer;
@@ -12,7 +13,7 @@ public class Player {
 	private PatientMulti data;
 	private PlayerRenderer renderer;
 	
-	public static Player getPlayer() throws Exception {
+	public static Player get() throws Exception {
 		if (player == null) {
 			player = new Player();
 		}
@@ -22,13 +23,26 @@ public class Player {
 	private Player() throws Exception {
 		data = new PatientMulti();
 		renderer = PlayerRenderer.get();
+		renderer.setPlayer(this);
 	}
 	
-	public void moveTo(Vector2 axial) {
-		data.position.pos = axial;
+	public void moveToHex(Vector2 axial) {
+		data.position.setByAxial(axial);
 	}
 	
-	public Vector2 getPosition() {
-		return data.position.pos;
+	public Vector2 getAxialPosition() {
+		return data.position.getAxial();
+	}
+	
+	public float getX() {
+		return data.position.getWorld().x;
+	}
+	
+	public float getY() {
+		return data.position.getWorld().y;
+	}
+	
+	public void render(SpriteBatch batch) {
+		renderer.render(batch);
 	}
 }

@@ -28,25 +28,9 @@ public class HexMap {
 	private Array<Hexagon> map;
 	private JsonMap jsonMap;
 	private Json json = new Json();
-	private IntArray dummyMap = new IntArray(new int[] { 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1 });
 	
-	private Hexagon oobHex = new Hexagon(true, -1, -1, -1, offsetToWorld(-1, -1));
+	private Hexagon oobHex = new Hexagon(true, -1, -1, -1, HexMath.offsetToWorld(-1, -1));
 
-	/**
-	 * @throws Exception 
-	 * @deprecated only for testing purposes
-	 */
-	@Deprecated
-	public HexMap() throws Exception {
-		WIDTH = HEIGHT = 4;
-		map = new Array<Hexagon>(WIDTH * HEIGHT);
-		for (int y = 0; y < HEIGHT; ++y) {
-			for (int x = 0; x < WIDTH; ++x) {
-				map.add(new Hexagon(true, x, y, dummyMap.get(x + y * WIDTH), offsetToWorld(x, y)));
-			}
-		}
-		jsonMap = new JsonMap(dummyMap, WIDTH, "negers", new Array<String>(new String[] { "point", "less" }));
-	}
 
 	public HexMap(String filename) throws Exception {
 		parseFromJson(filename);
@@ -54,15 +38,9 @@ public class HexMap {
 
 	// get axial coordinates of neighbor of #hex in #direction
 	public static Vector2 getAxialNeighbour(Hexagon hex, int direction) {
-		Vector2 dir = axialDirection[direction];
+		Vector2 dir = axialDirection[direction%axialDirection.length];
 		return new Vector2(hex.getAxial().add(dir));
 	}
-
-//	public static Vector2 axialToPixel(Vector2 axial) {
-//		float x = AXPIXFACTOR * (axial.x + axial.y / 2);
-//		float y = HEX_SIZE * 3 / 2 * axial.y;
-//		return new Vector2(x, y);
-//	}
 
 	public void dispose() {
 		// TODO: check for disposables!
@@ -70,6 +48,10 @@ public class HexMap {
 
 	public Array<Hexagon> getMap() {
 		return map;
+	}
+	
+	public int getWidth() {
+		return WIDTH;
 	}
 
 	public void parseFromJson(String filename) throws Exception {
@@ -93,22 +75,22 @@ public class HexMap {
 	}
 	
 	public Hexagon getByWorld(float x, float y) {
-		return getByAxial(worldToAxial(x,y));
-	}
-
-	private int axialDistance(Vector2 a, Vector2 b) {
-		Vector3 ac = Hexagon.axialToCube(a);
-		Vector3 bc = Hexagon.axialToCube(b);
-		return cubeDistance(ac, bc);
+		return getByAxial(HexMath.worldToAxial(x,y));
 	}
 
 	// give Hexagon located by axial coordinates
-	private Hexagon getByAxial(Vector2 axial) {
-		Vector2 offset = Hexagon.axialToOffset(axial);
-		if (offset.x < 0 || offset.y < 0) {
+	public Hexagon getByAxial(Vector2 axial) {
+		Vector2 offset = HexMath.axialToOffset(axial);
+		if (offset.x < 0 || offset.y < 0 || offset.x >= WIDTH || offset.y >= HEIGHT) {
 			return oobHex;
 		}
 		return map.get((int) (offset.x + offset.y * WIDTH));
+	}
+
+	private int axialDistance(Vector2 a, Vector2 b) {
+		Vector3 ac = HexMath.axialToCube(a);
+		Vector3 bc = HexMath.axialToCube(b);
+		return cubeDistance(ac, bc);
 	}
 
 	// give Hexagon located by standard offset coordinates
@@ -118,31 +100,14 @@ public class HexMap {
 
 	@Deprecated
 	private int offsetDistance(int xa, int ya, int xb, int yb) {
-		Vector3 ac = Hexagon.offsetToCube(xa, ya);
-		Vector3 bc = Hexagon.offsetToCube(xb, yb);
+		Vector3 ac = HexMath.offsetToCube(xa, ya);
+		Vector3 bc = HexMath.offsetToCube(xb, yb);
 		return cubeDistance(ac, bc);
 	}
 
 	@Deprecated
 	private int cubeDistance(Vector3 a, Vector3 b) {
 		return (int) (Math.abs(a.x - b.x) + Math.abs(a.y - b.y) + Math.abs(a.z - b.z)) / 2;
-	}
-	
-	public Vector2 worldToAxial(float x, float y) {
-		Vector2 fract = new Vector2();
-		fract.x = x * (2f/3f) / HEX_SIZE;
-		fract.y = (float) ((-x / 3f + Math.sqrt(3) / 3f * y) / HEX_SIZE);
-		return axialRound(fract);
-	}
-	
-	public Vector2 worldToOffset(float x, float y) {
-		return Hexagon.axialToOffset(worldToAxial(x,y));
-	}
-
-	private Vector2 offsetToWorld(int x, int y) {
-		float xp = HEX_SIZE * (3f / 2f) * (float)x;
-		float yp = (float) (HEX_SIZE * Math.sqrt(3) * ((float)y - 0.5f * (x & 1)));
-		return new Vector2(xp, yp);
 	}
 
 	private void readMapFromJsonMap() throws Exception {
@@ -155,35 +120,12 @@ public class HexMap {
 			for (int i = 0; i < jsonMap.getMap().size; ++i) {
 				int x = i % WIDTH;
 				int y = i / WIDTH;
-				map.add(new Hexagon(true, x, y, jsonMap.getMap().get(i), offsetToWorld(x, y)));
+				map.add(new Hexagon(true, x, y, jsonMap.getMap().get(i), HexMath.offsetToWorld(x, y)));
 			}
 			Gdx.app.debug(HexMap.class.toString(), "JsonMap successfully read into Hexagon Map");
 		} else {
 			Gdx.app.error(HexMap.class.toString(), "No jsonMap has been parsed yet!");
 		}
-	}
-
-	private Vector3 cubeRound(Vector3 cube) {
-		int rx = MathUtils.round(cube.x);
-		int ry = MathUtils.round(cube.y);
-		int rz = MathUtils.round(cube.z);
-	
-		float x_diff = Math.abs(rx - cube.x);
-		float y_diff = Math.abs(ry - cube.y);
-		float z_diff = Math.abs(rz - cube.z);
-	
-		if (x_diff > y_diff && x_diff > z_diff)
-			rx = -ry - rz;
-		else if (y_diff > z_diff)
-			ry = -rx - rz;
-		else
-			rz = -rx - ry;
-	
-		return new Vector3(rx, ry, rz);
-	}
-
-	private Vector2 axialRound(Vector2 axial) {
-		return Hexagon.cubeToAxial(cubeRound(Hexagon.axialToCube(axial)));
 	}
 
 }

@@ -1,8 +1,10 @@
 package com.flxkbr.hunger.gmobj;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.flxkbr.hunger.geom.HexMap;
+import com.flxkbr.hunger.geom.HexMath;
 import com.flxkbr.hunger.geom.Hexagon;
 import com.flxkbr.hunger.grfx.IRenderable;
 import com.flxkbr.hunger.grfx.MapRenderer;
@@ -10,6 +12,8 @@ import com.flxkbr.hunger.load.HRDisposable;
 import com.flxkbr.hunger.logic.IUpdatable;
 
 public class Map extends HRDisposable implements IRenderable, IUpdatable {
+	
+	private int WIDTH;
 	
 	private HexMap mapGeom;
 	private MapRenderer mapRend;
@@ -33,6 +37,20 @@ public class Map extends HRDisposable implements IRenderable, IUpdatable {
 		this.mapGeom = new HexMap(mapName);
 		this.mapRend = new MapRenderer();
 		this.mapRend.setMap(mapGeom);
+		WIDTH = mapGeom.getWidth();
+	}
+	
+	public Hexagon getHexagonByAxial(Vector2 axial) {
+		return mapGeom.getByAxial(axial);
+	}
+	
+//	public Hexagon getHexagonByWorld(Vector2 world) {
+//		return mapGeom.getByWorld(world.x, world.y);
+//	}
+	
+	public HexData getDataByAxial(Vector2 axial) {
+		Vector2 offset = HexMath.axialToOffset(axial);
+		return mapData.get(Math.round(offset.x + offset.y * WIDTH));
 	}
 
 	@Override
@@ -78,10 +96,6 @@ public class Map extends HRDisposable implements IRenderable, IUpdatable {
 
 	public HexMap getGeometry() {
 		return mapGeom;
-	}
-
-	public MapRenderer getRenderer() {
-		return mapRend;
 	}
 
 	public Array<HexData> getMapData() {
