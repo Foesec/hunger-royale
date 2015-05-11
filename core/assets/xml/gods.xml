@@ -4,8 +4,24 @@
             the hanged queen
         </name>
         <description>
-            the hanged queen used to be known by another name in another time and is said to have been a just and kind. 
-            one day she held a feast with thousands of guests from all over the land.
+            the hanged queen used to be known by another name in another time and is said to have been a just and kind ruler. 
+            one day she held a feast with hundreds of guests from all over the land. after all had arrived that would arrive,
+            the doors to the hall were sealed. what happened behind these doors no one knows, for there was no one alive to tell
+            when the seals were broken the next day. all except the queen of course, who just sat there, on her seat at the head of a table,
+            in the company of countless dead bodies. the townsfolk are said to have hanged her on a tree in the garden of her palace,
+            so quickly that no one asked her what had happened. naturally, they would never have understood, that even this was part of her ritual.
+        </description>
+    </god>
+    <god id="1">
+        <name>
+            the vengeful man
+        </name>
+        <description>
+            most men live ordinary lives. however, when their ordinary lives end, a few, extraordinary men begin their extraordinary lives.
+            still, this one man remained forever reasonable. indeed, if one loses all what one had, a man might break, might despair, 
+            yet he has no one to blame but himself for not looking after what was his. if it is taken from him however, the man is given something new, the man is given a purpose.
+            and extraordinary men do not stop until they filled their purpose. the vengeful man found his purpose in burning everything there was to burn.
+            and everything burns.
         </description>
     </god>
 </gods>
