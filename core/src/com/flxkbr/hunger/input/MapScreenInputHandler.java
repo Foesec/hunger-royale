@@ -14,9 +14,9 @@ public class MapScreenInputHandler implements InputProcessor {
 	private MapScreenMaster master;
 	//private Map currentMap;
 	
-	public MapScreenInputHandler(MapScreenMaster master) {
+	public MapScreenInputHandler() throws Exception {
 		this.currentCam = RenderMaster.getCurrentWorldCam();
-		this.master = master;
+		this.master = MapScreenMaster.get();
 	}
 	
 	public void setCamera(OrthographicCamera cam) {
@@ -37,7 +37,6 @@ public class MapScreenInputHandler implements InputProcessor {
 
 	@Override
 	public boolean keyTyped(char character) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

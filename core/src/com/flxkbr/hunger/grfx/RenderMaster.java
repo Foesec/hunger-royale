@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.flxkbr.hunger.GlobalConstants;
 import com.flxkbr.hunger.connectors.MapScreenMaster;
-import com.flxkbr.hunger.input.MapScreenInputHandler;
+import com.flxkbr.hunger.hud.HudMaster;
 import com.flxkbr.hunger.load.HRDisposable;
 
 public class RenderMaster extends HRDisposable {
@@ -22,11 +22,13 @@ public class RenderMaster extends HRDisposable {
 	
 	private SpriteBatch mainBatch;
 	private OrthographicCamera mainCam;
+	private OrthographicCamera hudCam;
 	private Array<Array<IRenderable>> renderPipeline;
 	
 	private float camSpeed = GlobalConstants.Settings.CAMERASENSITIVITY;
 	
 	private MapScreenMaster msmaster;
+	private HudMaster hudmaster;
 
 	
 	private RenderMaster() throws Exception {
@@ -38,6 +40,9 @@ public class RenderMaster extends HRDisposable {
 		mainCam = new OrthographicCamera(viewportWidth, viewportHeight);
 		mainCam.setToOrtho(true, viewportWidth, viewportWidth*aspectRatio);
 		mainCam.position.set(viewportWidth / 2f - 5, mainCam.viewportHeight / 2f - 10, 0);
+		
+		hudCam = new OrthographicCamera(viewportWidth, viewportHeight);
+		hudCam.setToOrtho(true, viewportWidth, viewportWidth*aspectRatio);
 		
 		for (int i = 0; i < RENDERLEVELS; ++i) {
 			renderPipeline.add(new Array<IRenderable>());
@@ -55,6 +60,7 @@ public class RenderMaster extends HRDisposable {
 			master = new RenderMaster();
 			master.msmaster = MapScreenMaster.get();
 			master.msmaster.init("test");
+			master.hudmaster = HudMaster.get();
 		}
 		return master;
 	}
@@ -82,11 +88,16 @@ public class RenderMaster extends HRDisposable {
 		mainBatch.setProjectionMatrix(mainCam.combined);
 		mainBatch.begin();
 		msmaster.masterRender(mainBatch);
-		for (int i = 0; i < RENDERLEVELS; ++i) {
-			for (int j = 0; j < renderPipeline.get(i).size; ++j) {
-				renderPipeline.get(i).get(j).render(mainBatch);
-			}
-		}
+//		for (int i = 0; i < RENDERLEVELS; ++i) {
+//			for (int j = 0; j < renderPipeline.get(i).size; ++j) {
+//				renderPipeline.get(i).get(j).render(mainBatch);
+//			}
+//		}
+		mainBatch.end();
+		hudCam.update();
+		mainBatch.setProjectionMatrix(hudCam.combined);
+		mainBatch.begin();
+		hudmaster.masterRender(mainBatch);
 		mainBatch.end();
 	}
 	

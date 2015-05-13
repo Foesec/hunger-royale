@@ -1,6 +1,5 @@
 package com.flxkbr.hunger.connectors;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -13,7 +12,6 @@ import com.flxkbr.hunger.gmobj.Patient;
 import com.flxkbr.hunger.gmobj.Player;
 import com.flxkbr.hunger.grfx.MasterRenderable;
 import com.flxkbr.hunger.grfx.RenderMaster;
-import com.flxkbr.hunger.input.MapScreenInputHandler;
 import com.flxkbr.hunger.logic.IUpdatable;
 import com.flxkbr.hunger.logic.LogicMaster;
 
@@ -53,7 +51,7 @@ public class MapScreenMaster implements IUpdatable, MasterRenderable {
 
 	public void init(String mapName) throws Exception {
 		this.map = new Map(mapName);
-		Gdx.input.setInputProcessor(new MapScreenInputHandler(this));
+		//Gdx.input.setInputProcessor(new MapScreenInputHandler(this));
 	}
 	
 	private void updateLogic() {

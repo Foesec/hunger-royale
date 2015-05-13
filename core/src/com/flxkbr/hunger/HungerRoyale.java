@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.flxkbr.hunger.connectors.Initializer;
 import com.flxkbr.hunger.grfx.RenderMaster;
 import com.flxkbr.hunger.load.DisposeHandler;
 import com.flxkbr.hunger.load.LoadManager;
@@ -20,15 +21,16 @@ public class HungerRoyale extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
+		Initializer i;
 		try {
-			renderer = RenderMaster.get();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			i = Initializer.get().initialize();
+			renderer = i.getRenderer();
+			updater = i.getUpdater();
+			cleaner = i.getCleaner();
+			loader = i.getLoader();
+		} catch (Exception e1) {
+			e1.printStackTrace();
 		}
-		updater = LogicMaster.get();
-		cleaner = DisposeHandler.get();
-		loader = LoadManager.get();
 		
 	}
 
