@@ -18,6 +18,7 @@ public class PlayerRenderer extends HRDisposable implements IRenderable {
 	private PlayerRenderer() throws Exception {
 		super();
 		spr = new Sprite(LoadManager.get().getTexture("prototype_gons.png"), 0, 0, 64, 64);
+		spr.flip(false, true);
 		spr.setSize(spr.getWidth()*GlobalConstants.SPRITESCALE, spr.getHeight()*GlobalConstants.SPRITESCALE);
 	}
 	

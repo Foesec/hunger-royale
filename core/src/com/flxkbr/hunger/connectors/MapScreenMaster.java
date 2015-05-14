@@ -3,15 +3,18 @@ package com.flxkbr.hunger.connectors;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.flxkbr.hunger.connectors.helpers.MapScreenSelection;
 import com.flxkbr.hunger.geom.HexMath;
 import com.flxkbr.hunger.geom.Hexagon;
+import com.flxkbr.hunger.gmobj.Clock;
 import com.flxkbr.hunger.gmobj.Map;
 import com.flxkbr.hunger.gmobj.Patient;
 import com.flxkbr.hunger.gmobj.Player;
 import com.flxkbr.hunger.grfx.MasterRenderable;
 import com.flxkbr.hunger.grfx.RenderMaster;
+import com.flxkbr.hunger.hud.HudMaster;
 import com.flxkbr.hunger.logic.IUpdatable;
 import com.flxkbr.hunger.logic.LogicMaster;
 
@@ -22,7 +25,7 @@ public class MapScreenMaster implements IUpdatable, MasterRenderable {
 	private static MapScreenMaster master;
 
 	private Player player;
-	private Array<Patient> patients;
+	//private Array<Patient> patients;
 	
 	private BitmapFont _bmf = new BitmapFont(true);
 	
@@ -44,14 +47,14 @@ public class MapScreenMaster implements IUpdatable, MasterRenderable {
 	}
 	
 	private MapScreenMaster() throws Exception {
-		_bmf.getData().setScale(RenderMaster.getWorldScale());
-		player = Player.get();
-		selector = new MapScreenSelection();
+
 	}
 
 	public void init(String mapName) throws Exception {
+		_bmf.getData().setScale(RenderMaster.getWorldScale());
+		player = Player.get();
+		selector = new MapScreenSelection();
 		this.map = new Map(mapName);
-		//Gdx.input.setInputProcessor(new MapScreenInputHandler(this));
 	}
 	
 	private void updateLogic() {
@@ -72,15 +75,20 @@ public class MapScreenMaster implements IUpdatable, MasterRenderable {
 		this.player = p;
 	}
 	
-	public void setPatients(Array<Patient> pats) {
-		this.patients = pats;
-	}
+//	public void setPatients(Array<Patient> pats) {
+//		this.patients = pats;
+//	}
 	
 	public boolean leftClickAtWorld(float x, float y) {
 		Vector2 axial = HexMath.worldToAxial(x, y);
 		Hexagon selection = map.getHexagonByAxial(axial);
-		this.selector.setSelection(selection);
-		
+		Array<Vector3> line = HexMath.cubeLine(HexMath.axialToCube(new Vector2()), HexMath.axialToCube(HexMath.worldToAxial(x, y)));
+		Array<Hexagon> hexline = new Array<Hexagon>();
+		for (Vector3 cube : line) {
+			hexline.add(map.getHexagonByAxial(HexMath.cubeToAxial(cube)));
+		}
+		this.selector.setSelectionLine(selection, hexline);
+
 		return true;
 	}
 	

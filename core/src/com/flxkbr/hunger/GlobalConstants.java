@@ -10,7 +10,7 @@ public final class GlobalConstants {
 	}
 	
 	public final class Settings {
-		private static final float SENS = 10f;
+		private static final float SENS = 30f;
 		public static final float CAMERASENSITIVITY = (SENS / 100f) *VIEWPORTWIDTH;
 	}
 	

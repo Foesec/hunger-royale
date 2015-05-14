@@ -3,6 +3,7 @@ package com.flxkbr.hunger.geom;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 import com.flxkbr.hunger.GlobalConstants;
 
 public abstract class HexMath {
@@ -65,6 +66,25 @@ public abstract class HexMath {
 		float angle_rad = MathUtils.PI / 180 * angle_deg;
 		return new Vector2(center.x + size * MathUtils.cos(angle_rad),
 							center.y + size * MathUtils.sin(angle_rad));
+	}
+	
+	public static Array<Vector3> cubeLine(Vector3 c1, Vector3 c2) {
+		Array<Vector3> line = new Array<Vector3>();
+		int N = cubeDistance(c1, c2);
+		for (int i = 0; i < N; ++i) {
+			line.add(cubeRound(cubeLerp(c1, c2, 1f/N * i)));
+		}
+		return line;
+	}
+	
+	public static Vector3 cubeLerp(Vector3 c1, Vector3 c2, float t) {
+		return new Vector3( c1.x + (c2.x - c1.x) * t,
+							c1.y + (c2.y - c1.y) * t,
+							c1.z + (c2.z - c1.z) * t );
+	}
+	
+	public static int cubeDistance(Vector3 a, Vector3 b) {
+		return Math.round(Math.max(Math.max(Math.abs(a.x - b.x), Math.abs(a.y - b.y)), Math.abs(a.z - b.z)));
 	}
 
 	private static Vector3 cubeRound(Vector3 cube) {

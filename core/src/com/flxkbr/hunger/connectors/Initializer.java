@@ -1,6 +1,7 @@
 package com.flxkbr.hunger.connectors;
 
 import com.flxkbr.hunger.grfx.RenderMaster;
+import com.flxkbr.hunger.hud.HudMaster;
 import com.flxkbr.hunger.input.InputMaster;
 import com.flxkbr.hunger.load.DisposeHandler;
 import com.flxkbr.hunger.load.LoadManager;
@@ -36,6 +37,8 @@ public class Initializer {
 		updater = LogicMaster.get();
 		cleaner = DisposeHandler.get();
 		loader = LoadManager.get();
+		MapScreenMaster.get();
+		HudMaster.get();
 		InputMaster.get();
 		return this;
 	}

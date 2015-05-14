@@ -1,8 +1,11 @@
 package com.flxkbr.hunger.grfx;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.flxkbr.hunger.GlobalConstants;
 import com.flxkbr.hunger.connectors.MapScreenMaster;
@@ -29,6 +32,8 @@ public class RenderMaster extends HRDisposable {
 	
 	private MapScreenMaster msmaster;
 	private HudMaster hudmaster;
+	
+	private BitmapFont font = new BitmapFont(true);
 
 	
 	private RenderMaster() throws Exception {
@@ -43,12 +48,14 @@ public class RenderMaster extends HRDisposable {
 		
 		hudCam = new OrthographicCamera(viewportWidth, viewportHeight);
 		hudCam.setToOrtho(true, viewportWidth, viewportWidth*aspectRatio);
+		//hudCam.position.set(viewportWidth / 2f - 5, mainCam.viewportHeight / 2f - 10, 0);
 		
 		for (int i = 0; i < RENDERLEVELS; ++i) {
 			renderPipeline.add(new Array<IRenderable>());
 		}
 		WORLDSCALE = viewportWidth / (float)Gdx.graphics.getWidth();
 		Gdx.app.log("WORLDSCALE", WORLDSCALE+"");
+		font.getData().setScale(WORLDSCALE);
 	}
 	
 	public static float getWorldScale() {
@@ -67,6 +74,10 @@ public class RenderMaster extends HRDisposable {
 	
 	public static OrthographicCamera getCurrentWorldCam() {
 		return master.mainCam;
+	}
+	
+	public static BitmapFont getMasterFont() {
+		return master.font;
 	}
 	
 	public void registerRenderable(IRenderable rend) {
@@ -88,12 +99,8 @@ public class RenderMaster extends HRDisposable {
 		mainBatch.setProjectionMatrix(mainCam.combined);
 		mainBatch.begin();
 		msmaster.masterRender(mainBatch);
-//		for (int i = 0; i < RENDERLEVELS; ++i) {
-//			for (int j = 0; j < renderPipeline.get(i).size; ++j) {
-//				renderPipeline.get(i).get(j).render(mainBatch);
-//			}
-//		}
 		mainBatch.end();
+		
 		hudCam.update();
 		mainBatch.setProjectionMatrix(hudCam.combined);
 		mainBatch.begin();
@@ -109,6 +116,7 @@ public class RenderMaster extends HRDisposable {
 		}*/
 		mainBatch.dispose();
 		msmaster.dispose();
+		font.dispose();
 	}
 	
 	public void resize() {
@@ -120,17 +128,26 @@ public class RenderMaster extends HRDisposable {
 	}
 	
 	private void handleScrolling() {
-		float mx = (Gdx.input.getX() / (float) Gdx.graphics.getWidth()) * viewportWidth;
-		if (mx < GlobalConstants.InputConstants.HORIZONTALSCROLLMARGIN) {
-			mainCam.translate(-camSpeed*Gdx.graphics.getDeltaTime(), 0);
-		} else if (mx > viewportWidth - GlobalConstants.InputConstants.HORIZONTALSCROLLMARGIN) {
-			mainCam.translate(camSpeed*Gdx.graphics.getDeltaTime(), 0);
+		Vector2 transl = new Vector2();
+		if (Gdx.input.isKeyPressed(Keys.A)) {
+			if (Gdx.input.isKeyPressed(Keys.D)) {
+				
+			} else {
+				transl.x = -camSpeed;
+			}
+		} else if (Gdx.input.isKeyPressed(Keys.D)) {
+			transl.x = camSpeed;
 		}
-		float my = (Gdx.input.getY() / (float) Gdx.graphics.getHeight()) * viewportHeight;
-		if (my < GlobalConstants.InputConstants.VERTICALSCROLLMARGIN) {
-			mainCam.translate(0, -camSpeed*Gdx.graphics.getDeltaTime());
-		} else if (my > viewportHeight - GlobalConstants.InputConstants.VERTICALSCROLLMARGIN) {
-			mainCam.translate(0, camSpeed*Gdx.graphics.getDeltaTime());
+		if (Gdx.input.isKeyPressed(Keys.W)) {
+			if (Gdx.input.isKeyPressed(Keys.S)) {
+				
+			} else {
+				transl.y = -camSpeed;
+			}
+		} else if (Gdx.input.isKeyPressed(Keys.S)) {
+			transl.y = camSpeed;
 		}
+		transl.scl(Gdx.graphics.getDeltaTime());
+		mainCam.translate(transl);
 	}
 }

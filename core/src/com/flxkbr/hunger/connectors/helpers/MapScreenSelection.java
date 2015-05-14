@@ -3,6 +3,7 @@ package com.flxkbr.hunger.connectors.helpers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Array;
 import com.flxkbr.hunger.GlobalConstants;
 import com.flxkbr.hunger.geom.Hexagon;
 import com.flxkbr.hunger.load.LoadManager;
@@ -11,6 +12,7 @@ public class MapScreenSelection {
 	
 	private Sprite selector;
 	private Hexagon selection;
+	private Array<Hexagon> selectionLine;
 	private boolean selected;
 
 	public MapScreenSelection() throws Exception {
@@ -24,7 +26,13 @@ public class MapScreenSelection {
 		this.selection = selection;
 		this.selected = true;
 		this.selector.setCenter(selection.getCenter().x, selection.getCenter().y);
-		Gdx.app.log("SELECTOR", "center: "+selection.getCenter() + ", axial: "+selection.getAxial());
+	}
+	
+	public void setSelectionLine(Hexagon selection, Array<Hexagon> line) {
+		this.selection = selection;
+		this.selectionLine = line;
+		this.selected = true;
+		
 	}
 	
 	public void deselect() {
@@ -42,6 +50,13 @@ public class MapScreenSelection {
 	
 	public void render(SpriteBatch batch) {
 		if (selected) {
+			if (selectionLine != null) {
+				for (Hexagon hex : selectionLine) {
+					selector.setCenter(hex.getCenter().x, hex.getCenter().y);
+					selector.draw(batch);
+				}
+				selector.setCenter(selection.getCenter().x, selection.getCenter().y);
+			}
 			selector.draw(batch);
 		}
 	}

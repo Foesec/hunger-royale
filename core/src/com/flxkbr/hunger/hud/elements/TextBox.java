@@ -19,16 +19,16 @@ public class TextBox extends InputAdapter {
 	
 	private TextBox() throws Exception {
 		box = new Sprite(LoadManager.get().getTexture(texturefile));
-		HudInputHandler.registerTextBox(this);
+		//HudInputHandler.registerTextBox(this);
 		Gdx.app.log("TextBox", "Self registered");
 	}
 	
-	public static TextBox createBox() throws Exception {
-		if (HudInputHandler.isFree())
-			return new TextBox();
-		else
-			throw new Exception("HudInputHandler is not free!");
-	}
+//	public static TextBox createBox() throws Exception {
+//		if (HudInputHandler.isFree())
+//			return new TextBox();
+//		else
+//			throw new Exception("HudInputHandler is not free!");
+//	}
 	
 	public void setPosition(float x, float y) {
 		box.setPosition(x, y);
@@ -39,9 +39,9 @@ public class TextBox extends InputAdapter {
 		MapScreenMaster._getBMF().draw(batch, text, box.getX(), box.getY());
 	}
 	
-	public void clicked() {
-		HudInputHandler.deregisterSelf(this);
-	}
+//	public void clicked() {
+//		HudInputHandler.deregisterSelf(this);
+//	}
 	
 	public void write(String text) {
 		this.text = text;
