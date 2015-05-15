@@ -1,5 +1,6 @@
 package com.flxkbr.hunger.connectors;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -81,13 +82,9 @@ public class MapScreenMaster implements IUpdatable, MasterRenderable {
 	
 	public boolean leftClickAtWorld(float x, float y) {
 		Vector2 axial = HexMath.worldToAxial(x, y);
-		Hexagon selection = map.getHexagonByAxial(axial);
-		Array<Vector3> line = HexMath.cubeLine(HexMath.axialToCube(new Vector2()), HexMath.axialToCube(HexMath.worldToAxial(x, y)));
-		Array<Hexagon> hexline = new Array<Hexagon>();
-		for (Vector3 cube : line) {
-			hexline.add(map.getHexagonByAxial(HexMath.cubeToAxial(cube)));
-		}
-		this.selector.setSelectionLine(selection, hexline);
+		Array<Vector2> line = HexMath.axialLine(HexMath.axialToCube(new Vector2()), HexMath.axialToCube(HexMath.worldToAxial(x, y)));
+		Gdx.app.log("MSM", "click at: "+axial.x+","+axial.y);
+		this.selector.setSelectionLine(axial, line);
 
 		return true;
 	}

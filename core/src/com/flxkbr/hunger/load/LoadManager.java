@@ -76,7 +76,7 @@ public class LoadManager extends HRDisposable {
 		}
 	}
 	
-	public Texture getTexture(String filename) throws Exception {
+	public Texture getTexture(String filename) {
 		String key = filename.replaceAll("\\.png", "");
 		if (loadTexture(key)) {
 			return textures.get(key);

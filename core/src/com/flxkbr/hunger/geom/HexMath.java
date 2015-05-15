@@ -33,7 +33,7 @@ public abstract class HexMath {
 	}
 	
 	public static Vector2 axialToWorld(Vector2 axial) {
-		float x = HEX_SIZE * (3/2) * axial.x;
+		float x = HEX_SIZE * (3f/2f) * axial.x;
 		float y = HEX_SIZE * GlobalConstants.SQRT3 * (axial.y + axial.x/2f);
 		return new Vector2(x, y);
 	}
@@ -73,6 +73,15 @@ public abstract class HexMath {
 		int N = cubeDistance(c1, c2);
 		for (int i = 0; i < N; ++i) {
 			line.add(cubeRound(cubeLerp(c1, c2, 1f/N * i)));
+		}
+		return line;
+	}
+	
+	public static Array<Vector2> axialLine(Vector3 c1, Vector3 c2) {
+		Array<Vector2> line = new Array<Vector2>();
+		int N = cubeDistance(c1, c2);
+		for (int i = 0; i < N; ++i) {
+			line.add(cubeToAxial(cubeRound(cubeLerp(c1, c2, 1f/N * i))));
 		}
 		return line;
 	}

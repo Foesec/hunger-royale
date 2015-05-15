@@ -6,8 +6,9 @@ import com.flxkbr.hunger.geom.HexMath;
 
 public class Position implements HRSystem {
 	
-	private Vector2 world = new Vector2(0, 0);
+	
 	private Vector2 axial = new Vector2(0, 0);
+	private Vector2 world = HexMath.axialToWorld(axial);
 	
 	public Vector2 getWorld() {
 		return world;
