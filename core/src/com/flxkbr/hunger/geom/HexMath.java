@@ -9,6 +9,12 @@ import com.flxkbr.hunger.GlobalConstants;
 public abstract class HexMath {
 	
 	private static final float HEX_SIZE = GlobalConstants.HEXSIZE;
+	
+	public static final Vector2[] axialDirection = { new Vector2(1, 0), new Vector2(1, -1), new Vector2(0, -1),
+		new Vector2(-1, 0), new Vector2(-1, 1), new Vector2(0, 1) };
+
+	public static final Vector3[] cubeDirections = { new Vector3(1, -1, 0), new Vector3(1, 0, -1),
+			new Vector3(0, 1, -1), new Vector3(-1, 1, 0), new Vector3(-1, 0, 1), new Vector3(0, -1, 1) };
 
 	public static Vector2 worldToAxial(float x, float y) {
 		Vector2 fract = new Vector2();
@@ -94,6 +100,15 @@ public abstract class HexMath {
 	
 	public static int cubeDistance(Vector3 a, Vector3 b) {
 		return Math.round(Math.max(Math.max(Math.abs(a.x - b.x), Math.abs(a.y - b.y)), Math.abs(a.z - b.z)));
+	}
+	
+	public static boolean isAxialNeighbor(Vector2 a, Vector2 b) {
+		for (Vector2 dir : axialDirection) {
+			if ((int)(a.x + dir.x) == (int)b.x && (int)(a.y + dir.y) == (int)b.y) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private static Vector3 cubeRound(Vector3 cube) {

@@ -16,7 +16,7 @@ public class HexMap {
 	public final static String TAG = "HEXMAP";
 	
 	private static final Vector2[] axialDirection = { new Vector2(1, 0), new Vector2(1, -1), new Vector2(0, -1),
-			new Vector2(-1, 0), new Vector2(-1, 1), new Vector2(0, 1) };
+		new Vector2(-1, 0), new Vector2(-1, 1), new Vector2(0, 1) };
 
 	private static final Vector3[] cubeDirections = { new Vector3(1, -1, 0), new Vector3(1, 0, -1),
 			new Vector3(0, 1, -1), new Vector3(-1, 1, 0), new Vector3(-1, 0, 1), new Vector3(0, -1, 1) };

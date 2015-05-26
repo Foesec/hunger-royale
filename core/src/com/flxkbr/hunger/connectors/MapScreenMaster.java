@@ -24,6 +24,8 @@ public class MapScreenMaster implements IUpdatable, MasterRenderable {
 	public static final int PRIO = 0;
 	
 	private static MapScreenMaster master;
+	
+	private HudMaster hud;
 
 	private Player player;
 	//private Array<Patient> patients;
@@ -32,6 +34,8 @@ public class MapScreenMaster implements IUpdatable, MasterRenderable {
 	
 	private Map map;
 	private MapScreenSelection selector;
+	
+	private SelectionData selectionData;
 	
 	public static MapScreenMaster get() throws Exception {
 		if (master == null)
@@ -48,7 +52,7 @@ public class MapScreenMaster implements IUpdatable, MasterRenderable {
 	}
 	
 	private MapScreenMaster() throws Exception {
-
+		this.hud = HudMaster.get();
 	}
 
 	public void init(String mapName) throws Exception {
@@ -56,6 +60,7 @@ public class MapScreenMaster implements IUpdatable, MasterRenderable {
 		player = Player.get();
 		selector = new MapScreenSelection();
 		this.map = new Map(mapName);
+		selectionData = new SelectionData();
 	}
 	
 	private void updateLogic() {
@@ -76,15 +81,11 @@ public class MapScreenMaster implements IUpdatable, MasterRenderable {
 		this.player = p;
 	}
 	
-//	public void setPatients(Array<Patient> pats) {
-//		this.patients = pats;
-//	}
-	
 	public boolean leftClickAtWorld(float x, float y) {
 		Vector2 axial = HexMath.worldToAxial(x, y);
-		Array<Vector2> line = HexMath.axialLine(HexMath.axialToCube(new Vector2()), HexMath.axialToCube(HexMath.worldToAxial(x, y)));
-		Gdx.app.log("MSM", "click at: "+axial.x+","+axial.y);
-		this.selector.setSelectionLine(axial, line);
+		Hexagon selection = map.getHexagonByAxial(axial);
+		processSelection(selection);
+		this.selector.setSelection(selection);
 
 		return true;
 	}
@@ -98,6 +99,21 @@ public class MapScreenMaster implements IUpdatable, MasterRenderable {
 	public void update() {
 		updateLogic();
 		//renderScreen();
+	}
+	
+	private void processSelection(Hexagon selection) {
+		if (selectionData.selection == selection) {
+			if (HexMath.isAxialNeighbor(player.getAxialPosition(), selection.getAxial())) {
+				movePlayer();
+			}
+		} else {
+			selectionData.selection = selection;
+		}
+	}
+	
+	private void movePlayer() {
+		player.moveToHex(selectionData.selection.getAxial());
+		HudMaster.incrementClock(4);
 	}
 
 	@Override
@@ -122,6 +138,10 @@ public class MapScreenMaster implements IUpdatable, MasterRenderable {
 	@Override
 	public int getPriority() {
 		return PRIO;
+	}
+	
+	private class SelectionData {
+		Hexagon selection = null;
 	}
 	
 }

@@ -14,6 +14,10 @@ public final class GlobalConstants {
 		public static final float CAMERASENSITIVITY = (SENS / 100f) *VIEWPORTWIDTH;
 	}
 	
+	public final class HudSettings {
+		public static final float OPENSPEED = 2000f;
+	}
+	
 	public static final float VIEWPORTWIDTH = 1920f;
 	public static final float VIEWPORTHEIGHT = 1080f;
 

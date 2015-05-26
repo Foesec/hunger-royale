@@ -44,7 +44,7 @@ public class RenderMaster extends HRDisposable {
 		viewportHeight = viewportWidth * aspectRatio;
 		mainCam = new OrthographicCamera(viewportWidth, viewportHeight);
 		mainCam.setToOrtho(true, viewportWidth, viewportWidth*aspectRatio);
-		mainCam.position.set(viewportWidth / 2f - 5, mainCam.viewportHeight / 2f - 10, 0);
+		mainCam.position.set(viewportWidth / 2f - 100, mainCam.viewportHeight / 2f - 200, 0);
 		
 		hudCam = new OrthographicCamera(viewportWidth, viewportHeight);
 		hudCam.setToOrtho(true, viewportWidth, viewportWidth*aspectRatio);

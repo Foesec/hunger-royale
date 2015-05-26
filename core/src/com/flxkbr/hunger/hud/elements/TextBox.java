@@ -19,8 +19,6 @@ public class TextBox extends InputAdapter {
 	
 	private TextBox() throws Exception {
 		box = new Sprite(LoadManager.get().getTexture(texturefile));
-		//HudInputHandler.registerTextBox(this);
-		Gdx.app.log("TextBox", "Self registered");
 	}
 	
 //	public static TextBox createBox() throws Exception {

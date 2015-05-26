@@ -19,9 +19,22 @@ public class ActionMenu implements HudElement {
 
 	private float openPositionY = 0f;
 	
-	private ActionMenuState state;
+	private MenuState state;
 	
-	public enum ActionMenuState {
+	private class WorldInfo {
+		public int patients;
+		public String[] actions;
+	}
+	
+	private class LocalInfo {
+		
+	}
+	
+	private class Actions {
+		
+	}
+	
+	public enum MenuState {
 		MIN,
 		OPENING,
 		CLOSING,
@@ -39,16 +52,16 @@ public class ActionMenu implements HudElement {
 		closedPositionY = -bg.getHeight()+latchOffset;
 		bg.flip(false, true);
 		bg.setPosition(positionX, closedPositionY);
-		state = ActionMenuState.MIN;
+		state = MenuState.MIN;
 		
 		Gdx.app.log("ActionMenu", "bg sprite initialized at " + bg.getOriginX() + ", " + bg.getOriginY());
 	}
 	
 	public void toggle() {
-		if (state == ActionMenuState.OPEN || state == ActionMenuState.OPENING) {
-			state = ActionMenuState.CLOSING;
+		if (state == MenuState.OPEN || state == MenuState.OPENING) {
+			state = MenuState.CLOSING;
 		} else {
-			state = ActionMenuState.OPENING;
+			state = MenuState.OPENING;
 		}
 	}
 
@@ -69,7 +82,7 @@ public class ActionMenu implements HudElement {
 		bg.translateY(scrollspeed * Gdx.graphics.getDeltaTime());
 		if (bg.getY() >= openPositionY) {
 			bg.setY(openPositionY);
-			state = ActionMenuState.OPEN;
+			state = MenuState.OPEN;
 		}
 	}
 	
@@ -77,7 +90,7 @@ public class ActionMenu implements HudElement {
 		bg.translateY(-scrollspeed * Gdx.graphics.getDeltaTime());
 		if (bg.getY() <= closedPositionY) {
 			bg.setY(closedPositionY);
-			state = ActionMenuState.MIN;
+			state = MenuState.MIN;
 		}
 	}
 

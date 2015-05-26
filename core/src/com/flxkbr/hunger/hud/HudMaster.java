@@ -6,6 +6,7 @@ import com.flxkbr.hunger.gmobj.Clock;
 import com.flxkbr.hunger.grfx.MasterRenderable;
 import com.flxkbr.hunger.hud.elements.ActionMenu;
 import com.flxkbr.hunger.hud.elements.HudElement;
+import com.flxkbr.hunger.hud.elements.InfoMenu;
 import com.flxkbr.hunger.load.HRDisposable;
 
 public class HudMaster extends HRDisposable implements MasterRenderable{
@@ -16,6 +17,7 @@ public class HudMaster extends HRDisposable implements MasterRenderable{
 	private Array<HudElement> elements;
 	private ActionMenu _am;
 	private Clock clock;
+	private InfoMenu infoMenu;
 	
 	private HudMaster() {
 		super();
@@ -26,6 +28,8 @@ public class HudMaster extends HRDisposable implements MasterRenderable{
 		elements.add(_am);
 		clock = new Clock();
 		elements.add(clock.getHudElement());
+		infoMenu = new InfoMenu();
+		elements.add(infoMenu);
 	}
 	
 	public static HudMaster get() {
@@ -36,7 +40,7 @@ public class HudMaster extends HRDisposable implements MasterRenderable{
 	}
 	
 	public void keyDown(int keyCode) {
-		_am.toggle();
+		infoMenu.toggle();
 	}
 	
 	public static Array<HudElement> getElements() {
